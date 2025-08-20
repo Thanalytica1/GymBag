@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymBag - Daily Essentials for Trainers</title>
+    <style>
+        /* Design System Variables */
+        :root {
+            /* Colors */
+            --primary-color: #667eea;
+            --primary-color-dark: #764ba2;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-color: #4CAF50;
+            --success-color-dark: #45a049;
+            --success-gradient: linear-gradient(135deg, #4CAF50, #45a049);
+            --warning-color: #ff9800;
+            --error-color: #f44336;
+            --info-color: #2196F3;
+            --info-color-dark: #1565C0;
+            
+            /* Text Colors */
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-light: #999;
+            --text-white: #ffffff;
+            
+            /* Background Colors */
+            --bg-white: #ffffff;
+            --bg-light: #f8f9fa;
+            --bg-lighter: #f5f5f5;
+            --bg-gray: #f0f0f0;
+            --bg-info-light: #e3f2fd;
+            
+            /* Typography */
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --font-size-xs: 0.8rem;
+            --font-size-sm: 0.9rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.1rem;
+            --font-size-xl: 1.2rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.8rem;
+            --font-size-4xl: 2rem;
+            --font-size-5xl: 2.5rem;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            
+            /* Spacing */
+            --spacing-xs: 5px;
+            --spacing-sm: 10px;
+            --spacing-md: 15px;
+            --spacing-lg: 20px;
+            --spacing-xl: 25px;
+            --spacing-2xl: 30px;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --radius-xl: 10px;
+            --radius-2xl: 15px;
+            --radius-full: 50%;
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 15px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 25px rgba(0,0,0,0.15);
+            --shadow-xl: 0 0 50px rgba(0,0,0,0.1);
+            --shadow-primary: 0 8px 25px rgba(102, 126, 234, 0.3);
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-base: 0.3s ease;
+            
+            /* Border */
+            --border-width: 1px;
+            --border-width-thick: 2px;
+            --border-color: #ddd;
+            --border-color-light: #eee;
+            --border-color-lighter: #f5f5f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            min-height: 100vh;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+        }
+
+        .header {
+            background: var(--primary-gradient);
+            color: var(--text-white);
+            padding: var(--spacing-lg);
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header h1 {
+            font-size: var(--font-size-3xl);
+            margin-bottom: var(--spacing-xs);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .header .date {
+            opacity: 0.9;
+            font-size: var(--font-size-sm);
+        }
+
+        .progress-section {
+            background: var(--bg-white);
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width) solid var(--border-color-light);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .progress-count {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .progress-percentage {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-gray);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-sm);
+            transition: width var(--transition-base);
+            width: 0%;
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .progress-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: var(--radius-full);
+            background: #e0e0e0;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .progress-dot.completed {
+            background: var(--success-gradient);
+            color: var(--text-white);
+        }
+
+        .checklist {
+            padding: 0 var(--spacing-lg) var(--spacing-lg);
+        }
+
+        .section-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            margin: var(--spacing-lg) 0 var(--spacing-md);
+            color: var(--text-primary);
+            border-bottom: var(--border-width-thick) solid var(--bg-gray);
+            padding-bottom: var(--spacing-xs);
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: var(--border-width) solid var(--border-color-lighter);
+            transition: all var(--transition-fast);
+        }
+
+        .task-item:hover {
+            background: #fafafa;
+            margin: 0 calc(-1 * var(--spacing-lg));
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-lg);
+        }
+
+        .task-checkbox {
+            width: 24px;
+            height: 24px;
+            border: var(--border-width-thick) solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-right: var(--spacing-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .task-checkbox.checked {
+            background: var(--success-gradient);
+            border-color: var(--success-color);
+            color: var(--text-white);
+        }
+
+        .task-checkbox:hover {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: var(--font-size-base);
+            line-height: 1.4;
+            transition: all var(--transition-fast);
+        }
+
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .task-category {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: 3px;
+        }
+
+        .reflection-section {
+            background: var(--bg-light);
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .reflection-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .input-label {
+            display: block;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-xs);
+            color: #555;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-base);
+            transition: border-color var(--transition-fast);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+        }
+
+        .save-button {
+            width: 100%;
+            background: var(--primary-gradient);
+            color: var(--text-white);
+            border: none;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-top: var(--spacing-sm);
+        }
+
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-primary);
+        }
+
+        .reset-button {
+            width: 100%;
+            background: transparent;
+            color: var(--text-secondary);
+            border: var(--border-width-thick) solid var(--border-color);
+            padding: 12px;
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-base);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-top: var(--spacing-sm);
+        }
+
+        .reset-button:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .streak-badge {
+            position: absolute;
+            top: var(--spacing-md);
+            right: var(--spacing-md);
+            background: rgba(255,255,255,0.2);
+            color: var(--text-white);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-2xl);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .achievement {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: var(--success-gradient);
+            color: var(--text-white);
+            margin: var(--spacing-lg);
+            border-radius: var(--radius-xl);
+            font-weight: var(--font-weight-semibold);
+            display: none;
+        }
+
+        .achievement.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .tip {
+            background: var(--bg-info-light);
+            border-left: 4px solid var(--info-color);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg);
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            font-size: var(--font-size-sm);
+            color: var(--info-color-dark);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="streak-badge" id="streakBadge">🔥 Day 1</div>
+            <h1>💪 GymBag</h1>
+            <div class="date" id="currentDate"></div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-header">
+                <div class="progress-count" id="progressCount">0/11 Tasks</div>
+                <div class="progress-percentage" id="progressPercentage">0%</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-dots" id="progressDots"></div>
+        </div>
+
+        <div class="achievement" id="achievement"></div>
+
+        <div class="checklist">
+            <div class="section-title">Client Care</div>
+            <div class="task-item" data-task="0">
+                <div class="task-checkbox" onclick="toggleTask(0)"></div>
+                <div class="task-text">
+                    <div class="task-category">Programming</div>
+                    Update client programs and workout plans
+                </div>
+            </div>
+            <div class="task-item" data-task="1">
+                <div class="task-checkbox" onclick="toggleTask(1)"></div>
+                <div class="task-text">
+                    <div class="task-category">Nutrition</div>
+                    Check client meal logs and prep guidance
+                </div>
+            </div>
+            <div class="task-item" data-task="2">
+                <div class="task-checkbox" onclick="toggleTask(2)"></div>
+                <div class="task-text">
+                    <div class="task-category">Communication</div>
+                    Log client feedback and progress notes
+                </div>
+            </div>
+
+            <div class="section-title">Business Growth</div>
+            <div class="task-item" data-task="3">
+                <div class="task-checkbox" onclick="toggleTask(3)"></div>
+                <div class="task-text">
+                    <div class="task-category">Content</div>
+                    Post 1 piece of valuable content
+                </div>
+            </div>
+            <div class="task-item" data-task="4">
+                <div class="task-checkbox" onclick="toggleTask(4)"></div>
+                <div class="task-text">
+                    <div class="task-category">Outreach</div>
+                    Complete 5 outreach/lead touches
+                </div>
+            </div>
+            <div class="task-item" data-task="5">
+                <div class="task-checkbox" onclick="toggleTask(5)"></div>
+                <div class="task-text">
+                    <div class="task-category">Admin</div>
+                    Handle payments and administrative tasks
+                </div>
+            </div>
+
+            <div class="section-title">Personal Health</div>
+            <div class="task-item" data-task="6">
+                <div class="task-checkbox" onclick="toggleTask(6)"></div>
+                <div class="task-text">
+                    <div class="task-category">Training</div>
+                    Complete your own workout
+                </div>
+            </div>
+            <div class="task-item" data-task="7">
+                <div class="task-checkbox" onclick="toggleTask(7)"></div>
+                <div class="task-text">
+                    <div class="task-category">Nutrition</div>
+                    Prep your meals for today/tomorrow
+                </div>
+            </div>
+            <div class="task-item" data-task="8">
+                <div class="task-checkbox" onclick="toggleTask(8)"></div>
+                <div class="task-text">
+                    <div class="task-category">Goals</div>
+                    Review your personal fitness goals
+                </div>
+            </div>
+
+            <div class="section-title">Professional Development</div>
+            <div class="task-item" data-task="9">
+                <div class="task-checkbox" onclick="toggleTask(9)"></div>
+                <div class="task-text">
+                    <div class="task-category">Learning</div>
+                    Read 1 study/article in fitness
+                </div>
+            </div>
+            <div class="task-item" data-task="10">
+                <div class="task-checkbox" onclick="toggleTask(10)"></div>
+                <div class="task-text">
+                    <div class="task-category">Knowledge</div>
+                    Note 1 insight to share with clients
+                </div>
+            </div>
+        </div>
+
+        <div class="tip">
+            💡 <strong>Success Tip:</strong> Aim for 9+ tasks daily (80% completion) to maintain optimal client care and business growth.
+        </div>
+
+        <div class="reflection-section">
+            <div class="reflection-title">📝 End of Day Reflection</div>
+            
+            <div class="input-group">
+                <label class="input-label">🏆 Biggest Win Today</label>
+                <input type="text" class="input-field" id="wins" placeholder="What went really well today?">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">⚡ Main Challenge</label>
+                <input type="text" class="input-field" id="challenges" placeholder="What was most difficult?">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label class="input-label">📞 Leads/Outreach</label>
+                    <input type="number" class="input-field" id="leads" placeholder="0" min="0">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">👥 Client Sessions</label>
+                    <input type="number" class="input-field" id="sessions" placeholder="0" min="0">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">📱 Content Posted</label>
+                <input type="text" class="input-field" id="content" placeholder="Link or description of content">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">🧠 Research/Insight</label>
+                <input type="text" class="input-field" id="research" placeholder="Key learning or insight">
+            </div>
+
+            <button class="save-button" onclick="saveDay()">💾 Save Today's Progress</button>
+            <button class="reset-button" onclick="resetDay()">🔄 Reset for Tomorrow</button>
+        </div>
+    </div>
+
+    <script>
+        let tasks = Array(11).fill(false);
+        let dailyData = [];
+
+        function initializeApp() {
+            updateDate();
+            createProgressDots();
+            updateProgress();
+            loadTodayData();
+            updateStreak();
+        }
+
+        function updateDate() {
+            const today = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+        }
+
+        function createProgressDots() {
+            const dotsContainer = document.getElementById('progressDots');
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < 11; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                dot.id = `dot-${i}`;
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function toggleTask(taskIndex) {
+            tasks[taskIndex] = !tasks[taskIndex];
+            const taskItem = document.querySelector(`[data-task="${taskIndex}"]`);
+            const checkbox = taskItem.querySelector('.task-checkbox');
+            const dot = document.getElementById(`dot-${taskIndex}`);
+            
+            if (tasks[taskIndex]) {
+                taskItem.classList.add('completed');
+                checkbox.classList.add('checked');
+                checkbox.innerHTML = '✓';
+                dot.classList.add('completed');
+                dot.innerHTML = '✓';
+            } else {
+                taskItem.classList.remove('completed');
+                checkbox.classList.remove('checked');
+                checkbox.innerHTML = '';
+                dot.classList.remove('completed');
+                dot.innerHTML = '';
+            }
+            
+            updateProgress();
+            checkAchievements();
+            saveTasks();
+        }
+
+        function updateProgress() {
+            const completed = tasks.filter(task => task).length;
+            const percentage = Math.round((completed / 11) * 100);
+            
+            document.getElementById('progressCount').textContent = `${completed}/11 Tasks`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+        }
+
+        function checkAchievements() {
+            const completed = tasks.filter(task => task).length;
+            const achievement = document.getElementById('achievement');
+            
+            if (completed === 5) {
+                showAchievement('🔥 Halfway there! Keep crushing it!');
+            } else if (completed === 9) {
+                showAchievement('⭐ 80% complete! You\'re in the success zone!');
+            } else if (completed === 11) {
+                showAchievement('🏆 Perfect day! All tasks completed!');
+            }
+        }
+
+        function showAchievement(message) {
+            const achievement = document.getElementById('achievement');
+            achievement.textContent = message;
+            achievement.classList.add('show');
+            setTimeout(() => {
+                achievement.classList.remove('show');
+            }, 3000);
+        }
+
+        function saveDay() {
+            const today = new Date().toDateString();
+            const completed = tasks.filter(task => task).length;
+            
+            const dayData = {
+                date: today,
+                tasksCompleted: completed,
+                completionRate: Math.round((completed / 11) * 100),
+                wins: document.getElementById('wins').value,
+                challenges: document.getElementById('challenges').value,
+                leads: document.getElementById('leads').value,
+                sessions: document.getElementById('sessions').value,
+                content: document.getElementById('content').value,
+                research: document.getElementById('research').value,
+                tasks: [...tasks]
+            };
+            
+            // Save to localStorage
+            const existingIndex = dailyData.findIndex(data => data.date === today);
+            if (existingIndex >= 0) {
+                dailyData[existingIndex] = dayData;
+            } else {
+                dailyData.push(dayData);
+            }
+            
+            const dataStr = JSON.stringify(dailyData);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `gymbag_data_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showAchievement('💾 Progress saved! Data downloaded to your device.');
+        }
+
+        function resetDay() {
+            if (confirm('Reset all tasks for tomorrow? This will clear today\'s progress.')) {
+                tasks.fill(false);
+                document.querySelectorAll('.task-item').forEach(item => {
+                    item.classList.remove('completed');
+                    item.querySelector('.task-checkbox').classList.remove('checked');
+                    item.querySelector('.task-checkbox').innerHTML = '';
+                });
+                document.querySelectorAll('.progress-dot').forEach(dot => {
+                    dot.classList.remove('completed');
+                    dot.innerHTML = '';
+                });
+                
+                // Clear reflection inputs
+                document.getElementById('wins').value = '';
+                document.getElementById('challenges').value = '';
+                document.getElementById('leads').value = '';
+                document.getElementById('sessions').value = '';
+                document.getElementById('content').value = '';
+                document.getElementById('research').value = '';
+                
+                updateProgress();
+                showAchievement('🔄 Ready for a new day! Let\'s crush those goals!');
+            }
+        }
+
+        function saveTasks() {
+            const data = {
+                date: new Date().toDateString(),
+                tasks: tasks
+            };
+            localStorage.setItem('gymbag-current', JSON.stringify(data));
+        }
+
+        function loadTodayData() {
+            const saved = localStorage.getItem('gymbag-current');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.date === new Date().toDateString()) {
+                    tasks = data.tasks;
+                    tasks.forEach((completed, index) => {
+                        if (completed) {
+                            toggleTask(index);
+                        }
+                    });
+                }
+            }
+        }
+
+        function updateStreak() {
+            // Simple streak simulation - in real app, this would be calculated from historical data
+            const streak = Math.floor(Math.random() * 7) + 1;
+            document.getElementById('streakBadge').textContent = `🔥 Day ${streak}`;
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
