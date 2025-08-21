@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymBag - Sign Up</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card signup">
+            <div class="auth-logo">
+                <h1>💪 GymBag</h1>
+                <p>The daily checklist for fitness professionals</p>
+            </div>
+
+            <form id="signupForm" onsubmit="handleSignUp(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="firstName">First Name</label>
+                        <input 
+                            type="text" 
+                            id="firstName" 
+                            class="form-input" 
+                            placeholder="John"
+                            required
+                        >
+                        <div class="error-message" id="firstNameError">Please enter your first name</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="lastName">Last Name</label>
+                        <input 
+                            type="text" 
+                            id="lastName" 
+                            class="form-input" 
+                            placeholder="Doe"
+                            required
+                        >
+                        <div class="error-message" id="lastNameError">Please enter your last name</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="form-input" 
+                        placeholder="trainer@example.com"
+                        required
+                    >
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            class="form-input" 
+                            placeholder="Create a strong password"
+                            required
+                            oninput="checkPasswordStrength()"
+                        >
+                        <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+                    </div>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                    </div>
+                    <div class="password-strength-text" id="passwordStrengthText">Enter at least 8 characters</div>
+                    <div class="error-message" id="passwordError">Password must be at least 8 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            class="form-input" 
+                            placeholder="Confirm your password"
+                            required
+                        >
+                        <span class="toggle-password" onclick="togglePassword('confirmPassword')">👁️</span>
+                    </div>
+                    <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
+                </div>
+
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <span class="benefit-icon">✓</span>
+                        <span>Track daily tasks and client progress</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">✓</span>
+                        <span>Analyze performance with detailed insights</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">✓</span>
+                        <span>Grow your fitness business efficiently</span>
+                    </div>
+                </div>
+
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-button" id="submitBtn">
+                    Create Your Free Account
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or sign up with</span>
+            </div>
+
+            <div class="social-buttons">
+                <button class="social-button" onclick="socialSignUp('google')">
+                    <span>🔵</span> Google
+                </button>
+                <button class="social-button" onclick="socialSignUp('apple')">
+                    <span>🍎</span> Apple
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="signin.html">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleBtn = passwordInput.nextElementSibling;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const strengthText = document.getElementById('passwordStrengthText');
+            
+            // Remove all strength classes
+            strengthBar.classList.remove('weak', 'medium', 'strong');
+            
+            if (password.length === 0) {
+                strengthText.textContent = 'Enter at least 8 characters';
+                return;
+            }
+            
+            let strength = 0;
+            
+            // Check length
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            
+            // Check for different character types
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            if (strength <= 2) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = 'Weak password';
+            } else if (strength <= 4) {
+                strengthBar.classList.add('medium');
+                strengthText.textContent = 'Medium strength';
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = 'Strong password';
+            }
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function handleSignUp(event) {
+            event.preventDefault();
+            
+            const firstName = document.getElementById('firstName');
+            const lastName = document.getElementById('lastName');
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const terms = document.getElementById('terms');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Reset error states
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.classList.remove('error');
+            });
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.classList.remove('show');
+            });
+            
+            let hasError = false;
+            
+            // Validate first name
+            if (firstName.value.trim().length < 2) {
+                firstName.classList.add('error');
+                document.getElementById('firstNameError').classList.add('show');
+                hasError = true;
+            }
+            
+            // Validate last name
+            if (lastName.value.trim().length < 2) {
+                lastName.classList.add('error');
+                document.getElementById('lastNameError').classList.add('show');
+                hasError = true;
+            }
+            
+            // Validate email
+            if (!validateEmail(email.value)) {
+                email.classList.add('error');
+                document.getElementById('emailError').classList.add('show');
+                hasError = true;
+            }
+            
+            // Validate password
+            if (password.value.length < 8) {
+                password.classList.add('error');
+                document.getElementById('passwordError').classList.add('show');
+                hasError = true;
+            }
+            
+            // Validate password confirmation
+            if (password.value !== confirmPassword.value) {
+                confirmPassword.classList.add('error');
+                document.getElementById('confirmPasswordError').classList.add('show');
+                hasError = true;
+            }
+            
+            // Validate terms
+            if (!terms.checked) {
+                alert('Please agree to the Terms of Service and Privacy Policy');
+                hasError = true;
+            }
+            
+            if (!hasError) {
+                // Show loading state
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    console.log('Sign up successful!');
+                    alert('Account created successfully! Redirecting to your dashboard...');
+                    // Redirect to welcome or dashboard
+                    window.location.href = 'gymbag_webapp.html';
+                }, 1500);
+            }
+        }
+
+        function socialSignUp(provider) {
+            console.log(`Signing up with ${provider}`);
+            alert(`Sign up with ${provider} - This would connect to ${provider}'s OAuth service`);
+            // Implement social sign-up logic here
+        }
+
+        // Add input event listeners for real-time validation
+        document.getElementById('email').addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                if (validateEmail(this.value)) {
+                    this.classList.remove('error');
+                    document.getElementById('emailError').classList.remove('show');
+                    this.classList.add('success');
+                }
+            }
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            if (this.value === password && password.length >= 8) {
+                this.classList.remove('error');
+                document.getElementById('confirmPasswordError').classList.remove('show');
+                this.classList.add('success');
+            }
+        });
+
+        document.getElementById('firstName').addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                if (this.value.trim().length >= 2) {
+                    this.classList.remove('error');
+                    document.getElementById('firstNameError').classList.remove('show');
+                }
+            }
+        });
+
+        document.getElementById('lastName').addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                if (this.value.trim().length >= 2) {
+                    this.classList.remove('error');
+                    document.getElementById('lastNameError').classList.remove('show');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

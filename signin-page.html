@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymBag - Sign In</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <h1>💪 GymBag</h1>
+                <p>Welcome back, champion!</p>
+            </div>
+
+            <form id="signinForm" onsubmit="handleSignIn(event)">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="form-input" 
+                        placeholder="trainer@example.com"
+                        required
+                    >
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            class="form-input" 
+                            placeholder="Enter your password"
+                            required
+                        >
+                        <span class="toggle-password" onclick="togglePassword()">👁️</span>
+                    </div>
+                    <div class="error-message" id="passwordError">Password must be at least 8 characters</div>
+                </div>
+
+                <div class="form-checkbox-group">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="submit-button" id="submitBtn">
+                    Sign In to Your Account
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <div class="social-buttons">
+                <button class="social-button" onclick="socialSignIn('google')">
+                    <span>🔵</span> Google
+                </button>
+                <button class="social-button" onclick="socialSignIn('apple')">
+                    <span>🍎</span> Apple
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="signup.html">Sign up for free</a></p>
+            </div>
+
+            <div class="feature-badges">
+                <div class="feature-badge">
+                    <span>✓</span> Secure
+                </div>
+                <div class="feature-badge">
+                    <span>✓</span> Private
+                </div>
+                <div class="feature-badge">
+                    <span>✓</span> Encrypted
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.toggle-password');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function handleSignIn(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Reset error states
+            email.classList.remove('error');
+            password.classList.remove('error');
+            document.getElementById('emailError').classList.remove('show');
+            document.getElementById('passwordError').classList.remove('show');
+            
+            let hasError = false;
+            
+            // Validate email
+            if (!validateEmail(email.value)) {
+                email.classList.add('error');
+                document.getElementById('emailError').classList.add('show');
+                hasError = true;
+            }
+            
+            // Validate password
+            if (password.value.length < 8) {
+                password.classList.add('error');
+                document.getElementById('passwordError').classList.add('show');
+                hasError = true;
+            }
+            
+            if (!hasError) {
+                // Show loading state
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    console.log('Sign in successful!');
+                    // Redirect to dashboard
+                    window.location.href = 'gymbag_webapp.html';
+                }, 1500);
+            }
+        }
+
+        function socialSignIn(provider) {
+            console.log(`Signing in with ${provider}`);
+            // Implement social sign-in logic here
+        }
+
+        // Add input event listeners for real-time validation
+        document.getElementById('email').addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                if (validateEmail(this.value)) {
+                    this.classList.remove('error');
+                    document.getElementById('emailError').classList.remove('show');
+                }
+            }
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                if (this.value.length >= 8) {
+                    this.classList.remove('error');
+                    document.getElementById('passwordError').classList.remove('show');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
