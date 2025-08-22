@@ -1,0 +1,21 @@
+{
+  "name": "gymbag",
+  "version": "1.0.0",
+  "description": "Daily Essentials for Trainers - Task management and analytics platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "fitness",
+    "trainer",
+    "task-management",
+    "analytics"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^9.22.0"
+  }
+}

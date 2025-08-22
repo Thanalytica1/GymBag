@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymBag - Sign In</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
 </head>
 <body>
     <div class="auth-container">
@@ -47,7 +52,7 @@
                         <input type="checkbox" id="remember">
                         <label for="remember">Remember me</label>
                     </div>
-                    <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+                    <a href="forgot-password-page.html" class="forgot-link">Forgot password?</a>
                 </div>
 
                 <button type="submit" class="submit-button" id="submitBtn">
@@ -69,7 +74,7 @@
             </div>
 
             <div class="auth-footer">
-                <p>Don't have an account? <a href="signup.html">Sign up for free</a></p>
+                <p>Don't have an account? <a href="signup-page.html">Sign up for free</a></p>
             </div>
 
             <div class="feature-badges">
@@ -105,7 +110,7 @@
             return re.test(email);
         }
 
-        function handleSignIn(event) {
+        async function handleSignIn(event) {
             event.preventDefault();
             
             const email = document.getElementById('email');
@@ -128,8 +133,9 @@
             }
             
             // Validate password
-            if (password.value.length < 8) {
+            if (password.value.length < 6) {
                 password.classList.add('error');
+                document.getElementById('passwordError').textContent = 'Password must be at least 6 characters';
                 document.getElementById('passwordError').classList.add('show');
                 hasError = true;
             }
@@ -138,13 +144,19 @@
                 // Show loading state
                 submitBtn.classList.add('loading');
                 submitBtn.disabled = true;
+                submitBtn.textContent = 'Signing in...';
                 
-                // Simulate API call
-                setTimeout(() => {
+                const result = await signIn(email.value, password.value);
+                
+                if (result.success) {
                     console.log('Sign in successful!');
-                    // Redirect to dashboard
-                    window.location.href = 'gymbag_webapp.html';
-                }, 1500);
+                    window.location.href = 'gymbag_dashboard.html';
+                } else {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Sign In to Your Account';
+                    alert(`Sign in failed: ${result.error}`);
+                }
             }
         }
 

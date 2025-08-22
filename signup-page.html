@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymBag - Sign Up</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
 </head>
 <body>
     <div class="auth-container">
@@ -190,7 +195,7 @@
             return re.test(email);
         }
 
-        function handleSignUp(event) {
+        async function handleSignUp(event) {
             event.preventDefault();
             
             const firstName = document.getElementById('firstName');
@@ -256,14 +261,21 @@
                 // Show loading state
                 submitBtn.classList.add('loading');
                 submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating account...';
                 
-                // Simulate API call
-                setTimeout(() => {
+                const displayName = `${firstName.value} ${lastName.value}`;
+                const result = await signUp(email.value, password.value, displayName);
+                
+                if (result.success) {
                     console.log('Sign up successful!');
                     alert('Account created successfully! Redirecting to your dashboard...');
-                    // Redirect to welcome or dashboard
-                    window.location.href = 'gymbag_webapp.html';
-                }, 1500);
+                    window.location.href = 'gymbag_dashboard.html';
+                } else {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Your Free Account';
+                    alert(`Sign up failed: ${result.error}`);
+                }
             }
         }
 
