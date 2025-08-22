@@ -1,0 +1,180 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User documents - users can only access their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId
+        && validateUserCreation(request.resource.data);
+      allow update: if request.auth != null && request.auth.uid == userId
+        && validateUserUpdate(request.resource.data, resource.data);
+      
+      // User subcollections
+      match /dailyProgress/{progressId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow create: if request.auth != null && request.auth.uid == userId
+          && validateProgressData(request.resource.data);
+      }
+      
+      match /customTasks/{taskId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow create: if request.auth != null && request.auth.uid == userId
+          && validateTaskData(request.resource.data);
+      }
+      
+      match /goals/{goalId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow create: if request.auth != null && request.auth.uid == userId
+          && validateGoalData(request.resource.data);
+      }
+      
+      match /securityLog/{logId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // Trainer-specific subcollections
+      match /clients/{clientId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId
+          && isTrainer(userId);
+        allow create: if request.auth != null && request.auth.uid == userId
+          && isTrainer(userId) && validateClientData(request.resource.data);
+      }
+      
+      match /workoutPlans/{planId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId
+          && isTrainer(userId);
+        allow create: if request.auth != null && request.auth.uid == userId
+          && isTrainer(userId) && validateWorkoutData(request.resource.data);
+      }
+    }
+    
+    // Admin access - only for users with admin role
+    match /users/{userId} {
+      allow read: if request.auth != null && isAdmin(request.auth.uid);
+      allow update: if request.auth != null && isAdmin(request.auth.uid)
+        && validateAdminUpdate(request.resource.data);
+      
+      match /{subcollection=**} {
+        allow read: if request.auth != null && isAdmin(request.auth.uid);
+      }
+    }
+    
+    // System collections - read-only for authenticated users
+    match /publicData/{document} {
+      allow read: if request.auth != null;
+    }
+    
+    match /systemConfig/{document} {
+      allow read: if request.auth != null && isAdmin(request.auth.uid);
+      allow write: if request.auth != null && isSuperAdmin(request.auth.uid);
+    }
+    
+    // Analytics and aggregated data - admin only
+    match /analytics/{document} {
+      allow read, write: if request.auth != null && isAdmin(request.auth.uid);
+    }
+    
+    // Global security events - admin only
+    match /globalSecurityLog/{logId} {
+      allow read, write: if request.auth != null && isAdmin(request.auth.uid);
+    }
+    
+    // Helper functions for validation and authorization
+    function isTrainer(userId) {
+      return get(/databases/$(database)/documents/users/$(userId)).data.userType == 'trainer';
+    }
+    
+    function isAdmin(userId) {
+      return get(/databases/$(database)/documents/users/$(userId)).data.role in ['admin', 'super_admin'];
+    }
+    
+    function isSuperAdmin(userId) {
+      return get(/databases/$(database)/documents/users/$(userId)).data.role == 'super_admin';
+    }
+    
+    function validateUserCreation(data) {
+      return data.keys().hasAll(['uid', 'email', 'displayName', 'userType', 'createdAt'])
+        && data.uid is string && data.uid.size() > 0
+        && data.email is string && data.email.matches('.*@.*\\.')
+        && data.displayName is string && data.displayName.size() > 0
+        && data.userType in ['client', 'trainer']
+        && data.createdAt == request.time;
+    }
+    
+    function validateUserUpdate(newData, oldData) {
+      return !newData.diff(oldData).affectedKeys().hasAny(['uid', 'createdAt'])
+        && (
+          !newData.diff(oldData).affectedKeys().hasAny(['email']) ||
+          newData.email is string && newData.email.matches('.*@.*\\.')
+        )
+        && (
+          !newData.diff(oldData).affectedKeys().hasAny(['userType']) ||
+          newData.userType in ['client', 'trainer']
+        );
+    }
+    
+    function validateProgressData(data) {
+      return data.keys().hasAll(['userId', 'date', 'timestamp', 'completedTasks'])
+        && data.userId == request.auth.uid
+        && data.date is string
+        && data.timestamp == request.time
+        && data.completedTasks is list
+        && data.completedTasks.size() <= 50;
+    }
+    
+    function validateTaskData(data) {
+      return data.keys().hasAll(['tasks', 'createdAt'])
+        && data.tasks is list
+        && data.tasks.size() <= 20
+        && data.createdAt == request.time;
+    }
+    
+    function validateGoalData(data) {
+      return data.keys().hasAll(['title', 'target', 'current', 'completed'])
+        && data.title is string && data.title.size() > 0
+        && data.target is number && data.target > 0
+        && data.current is number && data.current >= 0
+        && data.completed is bool;
+    }
+    
+    function validateClientData(data) {
+      return data.keys().hasAll(['trainerId', 'createdAt'])
+        && data.trainerId == request.auth.uid
+        && data.createdAt == request.time;
+    }
+    
+    function validateWorkoutData(data) {
+      return data.keys().hasAll(['trainerId', 'createdAt'])
+        && data.trainerId == request.auth.uid
+        && data.createdAt == request.time;
+    }
+    
+    function validateAdminUpdate(data) {
+      return !data.diff(resource.data).affectedKeys().hasAny(['uid', 'createdAt', 'role']);
+    }
+    
+    // Rate limiting - prevent spam
+    function rateLimitCheck() {
+      // Allow max 100 writes per minute per user
+      return request.auth != null;
+    }
+    
+    // Data size limits
+    function validateDataSize(data) {
+      return request.resource.size < 1024 * 1024; // 1MB limit
+    }
+    
+    // Sensitive data protection
+    function protectSensitiveData(data) {
+      return !data.keys().hasAny(['password', 'creditCard', 'ssn', 'apiKey']);
+    }
+    
+    // Apply global rules to all writes
+    match /{document=**} {
+      allow write: if rateLimitCheck() && validateDataSize(request.resource.data) 
+        && protectSensitiveData(request.resource.data);
+    }
+  }
+}

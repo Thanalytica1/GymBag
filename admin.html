@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymBag Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-tab.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .admin-section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .search-bar:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .security-alert {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .security-alert.danger {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .user-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .user-detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .user-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #6c757d;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .access-denied {
+            text-align: center;
+            padding: 60px 20px;
+            background: #f8d7da;
+            border-radius: 12px;
+            color: #721c24;
+        }
+
+        .export-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .page-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1>🛡️ GymBag Admin Panel</h1>
+            <p>Manage users, monitor activity, and maintain system security</p>
+            <div id="admin-user-info" style="margin-top: 15px; font-size: 14px; opacity: 0.9;"></div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="admin-nav">
+            <div class="nav-tab active" onclick="showSection('dashboard')">📊 Dashboard</div>
+            <div class="nav-tab" onclick="showSection('users')">👥 Users</div>
+            <div class="nav-tab" onclick="showSection('security')">🔒 Security</div>
+            <div class="nav-tab" onclick="showSection('analytics')">📈 Analytics</div>
+            <div class="nav-tab" onclick="showSection('support')">🎧 Support</div>
+            <div class="nav-tab" onclick="showSection('settings')">⚙️ Settings</div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="error-message"></div>
+
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading admin data...</p>
+        </div>
+
+        <!-- Access Denied -->
+        <div id="access-denied" class="access-denied" style="display: none;">
+            <h2>🚫 Access Denied</h2>
+            <p>You don't have permission to access the admin panel.</p>
+            <button class="btn-primary" onclick="goToDashboard()">Go to Dashboard</button>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="admin-section active">
+            <h2>System Overview</h2>
+            
+            <div class="stats-grid" id="stats-grid">
+                <!-- Stats will be populated by JavaScript -->
+            </div>
+
+            <div class="security-alert" id="security-alerts" style="display: none;">
+                <strong>Security Alert:</strong> <span id="alert-message"></span>
+            </div>
+
+            <h3>Recent Activity</h3>
+            <div class="chart-container">
+                <p>📊 Activity charts will be displayed here</p>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="users-section" class="admin-section">
+            <h2>User Management</h2>
+            
+            <div class="export-controls">
+                <button class="export-btn" onclick="exportUsers()">📥 Export Users</button>
+                <button class="export-btn" onclick="refreshUsers()">🔄 Refresh</button>
+            </div>
+
+            <input type="text" id="user-search" class="search-bar" placeholder="Search users by name, email, or ID...">
+            
+            <div class="filter-controls">
+                <select id="user-type-filter" class="filter-select">
+                    <option value="">All User Types</option>
+                    <option value="client">Clients</option>
+                    <option value="trainer">Trainers</option>
+                </select>
+                
+                <select id="user-status-filter" class="filter-select">
+                    <option value="">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="pending">Pending Verification</option>
+                    <option value="locked">Locked</option>
+                </select>
+                
+                <select id="subscription-filter" class="filter-select">
+                    <option value="">All Subscriptions</option>
+                    <option value="free">Free</option>
+                    <option value="pro">Pro</option>
+                    <option value="premium">Premium</option>
+                </select>
+            </div>
+
+            <table class="data-table" id="users-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Subscription</th>
+                        <th>Joined</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body">
+                    <!-- Users will be populated by JavaScript -->
+                </tbody>
+            </table>
+
+            <div class="pagination" id="users-pagination">
+                <!-- Pagination will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Security Section -->
+        <div id="security-section" class="admin-section">
+            <h2>Security Monitor</h2>
+            
+            <div class="security-alert danger" id="security-threats" style="display: none;">
+                <strong>Security Threats Detected:</strong>
+                <div id="threats-list"></div>
+            </div>
+
+            <h3>Login Attempts</h3>
+            <table class="data-table" id="security-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>User</th>
+                        <th>Event Type</th>
+                        <th>IP Address</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="security-table-body">
+                    <!-- Security events will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analytics-section" class="admin-section">
+            <h2>Analytics & Insights</h2>
+            
+            <div class="filter-controls">
+                <select id="analytics-period" class="filter-select">
+                    <option value="7">Last 7 days</option>
+                    <option value="30">Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                </select>
+                <button class="btn-primary" onclick="refreshAnalytics()">Update Charts</button>
+            </div>
+
+            <div class="chart-container">
+                <p>📈 User engagement and system metrics will be displayed here</p>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div id="support-section" class="admin-section">
+            <h2>User Support</h2>
+            
+            <h3>Support Tickets</h3>
+            <div class="chart-container">
+                <p>🎧 Support ticket system will be displayed here</p>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings-section" class="admin-section">
+            <h2>System Settings</h2>
+            
+            <div class="info-item">
+                <div class="info-label">System Maintenance</div>
+                <button class="btn-warning" onclick="performMaintenance()">Run Maintenance Tasks</button>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Database Backup</div>
+                <button class="btn-success" onclick="createBackup()">Create Backup</button>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Clear Cache</div>
+                <button class="btn-primary" onclick="clearSystemCache()">Clear Cache</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="user-detail-modal" class="user-detail-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>User Details</h3>
+                <button class="close-modal" onclick="closeUserModal()">&times;</button>
+            </div>
+            <div id="user-detail-content">
+                <!-- User details will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
