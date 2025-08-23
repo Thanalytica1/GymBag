@@ -18,6 +18,12 @@ let onboardingData = {
 
 async function initializeOnboarding() {
     try {
+        if (typeof auth === 'undefined' || !auth) {
+            console.error('Firebase auth not initialized');
+            setTimeout(initializeOnboarding, 100);
+            return;
+        }
+        
         const user = auth.currentUser;
         if (!user) {
             window.location.href = 'signin-page.html';

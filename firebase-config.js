@@ -1,10 +1,10 @@
 const firebaseConfig = {
-    apiKey: process.env.FIREBASE_API_KEY || "AIzaSyDGK8z9XvY5x8QgZrF2mP7nV3bJ4cH9wL1",
+    apiKey: "AIzaSyDGK8z9XvY5x8QgZrF2mP7nV3bJ4cH9wL1",
     authDomain: "gymbag-29586.firebaseapp.com",
     projectId: "gymbag-29586",
     storageBucket: "gymbag-29586.appspot.com",
     messagingSenderId: "67536575856",
-    appId: process.env.FIREBASE_APP_ID || "1:67536575856:web:8f7a6b5c4d3e2f1a9b8c7d",
+    appId: "1:67536575856:web:8f7a6b5c4d3e2f1a9b8c7d",
     measurementId: "G-1234567890"
 };
 

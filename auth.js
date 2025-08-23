@@ -503,7 +503,8 @@ async function checkEmailVerification() {
 let authStateInitialized = false;
 let sessionTimeout = null;
 
-auth.onAuthStateChanged(async (user) => {
+if (typeof auth !== 'undefined' && auth) {
+    auth.onAuthStateChanged(async (user) => {
     if (user) {
         console.log('User is signed in:', user.email);
         
@@ -583,7 +584,8 @@ auth.onAuthStateChanged(async (user) => {
     if (!authStateInitialized) {
         authStateInitialized = true;
     }
-});
+    });
+}
 
 function setupSessionTimeout() {
     clearSessionTimeout();
