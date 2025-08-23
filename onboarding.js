@@ -61,6 +61,11 @@ function setupEventListeners() {
     document.getElementById('onboarding-phone').addEventListener('input', updatePhone);
 }
 
+function confirmTrainerRole() {
+    onboardingData.userType = 'trainer'; // Always trainer
+    nextStep();
+}
+
 function selectUserType(option) {
     document.querySelectorAll('.user-type-option').forEach(opt => opt.classList.remove('selected'));
     option.classList.add('selected');
@@ -277,12 +282,12 @@ async function createInitialGoals() {
         const batch = db.batch();
 
         const goalTemplates = {
-            'weight-loss': { title: 'Lose Weight', target: 10, unit: 'lbs', category: 'weight' },
-            'muscle-gain': { title: 'Build Muscle', target: 5, unit: 'lbs', category: 'weight' },
-            'endurance': { title: 'Improve Endurance', target: 30, unit: 'minutes', category: 'cardio' },
-            'strength': { title: 'Increase Strength', target: 50, unit: 'lbs', category: 'strength' },
-            'flexibility': { title: 'Improve Flexibility', target: 21, unit: 'days', category: 'flexibility' },
-            'general-health': { title: 'General Health', target: 7, unit: 'days/week', category: 'health' }
+            'client-growth': { title: 'Acquire New Clients', target: 5, unit: 'clients', category: 'business' },
+            'revenue-growth': { title: 'Monthly Revenue Growth', target: 1000, unit: 'dollars', category: 'business' },
+            'content-creation': { title: 'Content Posts', target: 20, unit: 'posts', category: 'marketing' },
+            'professional-dev': { title: 'Continue Education', target: 10, unit: 'hours', category: 'education' },
+            'business-systems': { title: 'System Improvements', target: 3, unit: 'systems', category: 'operations' },
+            'specialization': { title: 'Specialization Development', target: 1, unit: 'certification', category: 'expertise' }
         };
 
         onboardingData.goals.forEach((goalType, index) => {

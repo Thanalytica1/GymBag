@@ -129,24 +129,29 @@
             <div class="reflection-title">📝 End of Day Reflection</div>
             
             <div class="input-group">
-                <label class="input-label">🏆 Biggest Win Today</label>
-                <input type="text" class="input-field" id="wins" placeholder="What went really well today?">
+                <label class="input-label">🏆 Business Win Today</label>
+                <input type="text" class="input-field" id="wins" placeholder="What business success did you have?">
             </div>
 
             <div class="input-group">
-                <label class="input-label">⚡ Main Challenge</label>
-                <input type="text" class="input-field" id="challenges" placeholder="What was most difficult?">
+                <label class="input-label">⚡ Business Challenge</label>
+                <input type="text" class="input-field" id="challenges" placeholder="What business obstacle did you face?">
             </div>
 
             <div class="input-row">
                 <div class="input-group">
-                    <label class="input-label">📞 Leads/Outreach</label>
+                    <label class="input-label">📞 Leads Generated</label>
                     <input type="number" class="input-field" id="leads" placeholder="0" min="0">
                 </div>
                 <div class="input-group">
                     <label class="input-label">👥 Client Sessions</label>
                     <input type="number" class="input-field" id="sessions" placeholder="0" min="0">
                 </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">💰 Revenue Generated</label>
+                <input type="number" class="input-field" id="revenue" placeholder="0" min="0" step="0.01">
             </div>
 
             <div class="input-group">
@@ -254,7 +259,7 @@
             }, 3000);
         }
 
-        function saveDay() {
+        async function saveDay() {
             const today = new Date().toDateString();
             const completed = tasks.filter(task => task).length;
             
@@ -266,10 +271,21 @@
                 challenges: document.getElementById('challenges').value,
                 leads: document.getElementById('leads').value,
                 sessions: document.getElementById('sessions').value,
+                revenue: document.getElementById('revenue').value,
                 content: document.getElementById('content').value,
                 research: document.getElementById('research').value,
                 tasks: [...tasks]
             };
+            
+            // Save business metrics to Firebase if available
+            if (typeof saveBusinessMetrics === 'function') {
+                await saveBusinessMetrics({
+                    revenue: parseFloat(document.getElementById('revenue').value) || 0,
+                    sessions: parseInt(document.getElementById('sessions').value) || 0,
+                    leads: parseInt(document.getElementById('leads').value) || 0,
+                    content: document.getElementById('content').value
+                });
+            }
             
             // Save to localStorage
             const existingIndex = dailyData.findIndex(data => data.date === today);
@@ -312,6 +328,7 @@
                 document.getElementById('challenges').value = '';
                 document.getElementById('leads').value = '';
                 document.getElementById('sessions').value = '';
+                document.getElementById('revenue').value = '';
                 document.getElementById('content').value = '';
                 document.getElementById('research').value = '';
                 

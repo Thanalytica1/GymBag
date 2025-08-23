@@ -14,24 +14,27 @@ let motivationalQuotes = [
 ];
 
 const defaultTaskTemplates = {
-    client: [
-        { category: 'Fitness', text: 'Complete today\'s workout', completed: false, priority: 1 },
-        { category: 'Nutrition', text: 'Log meals and track nutrition', completed: false, priority: 2 },
-        { category: 'Hydration', text: 'Drink adequate water (8 glasses)', completed: false, priority: 2 },
-        { category: 'Recovery', text: 'Get quality sleep (7-9 hours)', completed: false, priority: 3 },
-        { category: 'Mindfulness', text: 'Practice stress management', completed: false, priority: 3 },
-        { category: 'Planning', text: 'Plan tomorrow\'s activities', completed: false, priority: 4 }
-    ],
     trainer: [
-        { category: 'Programming', text: 'Update client programs and workout plans', completed: false, priority: 1 },
-        { category: 'Communication', text: 'Check in with clients and respond to messages', completed: false, priority: 1 },
-        { category: 'Sessions', text: 'Conduct scheduled training sessions', completed: false, priority: 1 },
-        { category: 'Nutrition', text: 'Review client meal logs and provide guidance', completed: false, priority: 2 },
-        { category: 'Analysis', text: 'Review form videos and movement assessments', completed: false, priority: 2 },
-        { category: 'Planning', text: 'Schedule upcoming sessions and consultations', completed: false, priority: 3 },
-        { category: 'Education', text: 'Continue professional development', completed: false, priority: 3 },
-        { category: 'Admin', text: 'Handle administrative tasks', completed: false, priority: 4 },
-        { category: 'Content', text: 'Create motivational or educational content', completed: false, priority: 4 }
+        // Client Care & Service
+        { category: 'Client Care', text: 'Update client programs and workout plans', priority: 1 },
+        { category: 'Client Care', text: 'Review client meal logs and provide feedback', priority: 1 },
+        { category: 'Client Care', text: 'Log client progress and session notes', priority: 1 },
+        { category: 'Client Care', text: 'Schedule client check-ins and assessments', priority: 2 },
+        
+        // Business Development  
+        { category: 'Business', text: 'Post valuable fitness content (social/blog)', priority: 1 },
+        { category: 'Business', text: 'Complete 5+ lead generation activities', priority: 1 },
+        { category: 'Business', text: 'Follow up with prospects and consultations', priority: 2 },
+        { category: 'Business', text: 'Handle client payments and admin tasks', priority: 2 },
+        
+        // Professional Growth
+        { category: 'Professional', text: 'Read fitness study or industry article', priority: 3 },
+        { category: 'Professional', text: 'Note insights to share with clients', priority: 3 },
+        { category: 'Professional', text: 'Continue education or certification work', priority: 4 },
+        
+        // Personal Maintenance  
+        { category: 'Personal', text: 'Complete your own workout (lead by example)', priority: 2 },
+        { category: 'Personal', text: 'Meal prep and nutrition planning', priority: 3 }
     ]
 };
 
@@ -99,8 +102,8 @@ async function loadUserTasks() {
 }
 
 async function createDefaultTasks() {
-    const userType = userData?.userType || 'client';
-    const defaultTasks = defaultTaskTemplates[userType] || defaultTaskTemplates.client;
+    // Always use trainer tasks (remove userType logic)
+    const defaultTasks = defaultTaskTemplates.trainer;
     
     customTasks = [...defaultTasks];
     dailyTasks = customTasks.map(task => ({ ...task, completed: false }));

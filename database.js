@@ -310,3 +310,31 @@ async function getWorkoutPlans(clientId = null) {
         return { success: false, error: error.message };
     }
 }
+
+async function saveBusinessMetrics(metrics) {
+    try {
+        const user = auth.currentUser;
+        if (!user) throw new Error('No user logged in');
+        
+        const today = new Date().toDateString();
+        
+        const metricsData = {
+            userId: user.uid,
+            date: today,
+            revenue: metrics.revenue || 0,
+            clientSessions: metrics.sessions || 0,
+            leadsGenerated: metrics.leads || 0,
+            contentCreated: metrics.content || '',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        await db.collection('users').doc(user.uid)
+            .collection('businessMetrics').doc(today)
+            .set(metricsData, { merge: true });
+            
+        return { success: true };
+    } catch (error) {
+        console.error('Save business metrics error:', error);
+        return { success: false, error: error.message };
+    }
+}

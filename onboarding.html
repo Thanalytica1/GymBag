@@ -299,59 +299,66 @@
             </div>
         </div>
 
-        <!-- Step 2: User Type -->
+        <!-- Step 2: Trainer Confirmation -->
         <div class="onboarding-step" id="step-2">
-            <div class="step-title">What describes you best?</div>
-            <div class="step-subtitle">This helps us customize your dashboard and features</div>
+            <div class="step-title">Confirm Your Professional Focus</div>
+            <div class="step-subtitle">GymBag is designed specifically for personal trainers</div>
             
-            <div class="user-type-grid">
-                <div class="user-type-option" data-type="client">
-                    <div class="user-type-icon">🏃‍♂️</div>
-                    <h3>Fitness Enthusiast</h3>
-                    <p>I want to track my personal fitness journey and build healthy habits</p>
-                </div>
-                <div class="user-type-option" data-type="trainer">
-                    <div class="user-type-icon">🏋️‍♀️</div>
-                    <h3>Fitness Trainer</h3>
-                    <p>I help others achieve their fitness goals and manage multiple clients</p>
+            <div class="trainer-confirmation">
+                <div class="confirmation-card" style="max-width: 500px; margin: 0 auto; border: 2px solid #007bff; border-radius: 12px; padding: 30px; background: #f8f9fa;">
+                    <div class="confirmation-icon" style="font-size: 48px; text-align: center; margin-bottom: 15px;">🏋️‍♀️</div>
+                    <h3 style="text-align: center; margin-bottom: 10px;">Personal Trainer</h3>
+                    <p style="text-align: center; color: #666; margin-bottom: 20px;">I'm a fitness professional managing clients and growing my training business</p>
+                    <div class="confirmation-features" style="display: grid; gap: 10px;">
+                        <div class="feature" style="padding: 8px; background: white; border-radius: 6px;">✓ Client progress tracking</div>
+                        <div class="feature" style="padding: 8px; background: white; border-radius: 6px;">✓ Business development tasks</div>
+                        <div class="feature" style="padding: 8px; background: white; border-radius: 6px;">✓ Professional growth planning</div>
+                        <div class="feature" style="padding: 8px; background: white; border-radius: 6px;">✓ Revenue and lead tracking</div>
+                    </div>
                 </div>
             </div>
 
             <div class="onboarding-buttons">
                 <button class="btn-secondary" onclick="previousStep()">Back</button>
-                <button class="btn-primary" onclick="nextStep()" id="user-type-next" disabled>Continue</button>
+                <button class="btn-primary" onclick="confirmTrainerRole()">Yes, I'm a Personal Trainer</button>
             </div>
         </div>
 
-        <!-- Step 3: Goals -->
+        <!-- Step 3: Business Goals -->
         <div class="onboarding-step" id="step-3">
-            <div class="step-title">What are your fitness goals?</div>
+            <div class="step-title">What are your business goals?</div>
             <div class="step-subtitle">Select all that apply - we'll help you track progress toward these goals</div>
             
             <div class="goals-grid">
-                <div class="goal-option" data-goal="weight-loss">
-                    <div style="font-size: 32px; margin-bottom: 10px;">⚖️</div>
-                    <strong>Weight Loss</strong>
+                <div class="goal-option" data-goal="client-growth">
+                    <div style="font-size: 32px; margin-bottom: 10px;">👥</div>
+                    <strong>Client Growth</strong>
+                    <p style="font-size: 12px; color: #666; margin: 5px 0;">Acquire new clients and build client base</p>
                 </div>
-                <div class="goal-option" data-goal="muscle-gain">
-                    <div style="font-size: 32px; margin-bottom: 10px;">💪</div>
-                    <strong>Muscle Gain</strong>
+                <div class="goal-option" data-goal="revenue-growth">
+                    <div style="font-size: 32px; margin-bottom: 10px;">💰</div>
+                    <strong>Revenue Growth</strong>
+                    <p style="font-size: 12px; color: #666; margin: 5px 0;">Increase monthly income and session rates</p>
                 </div>
-                <div class="goal-option" data-goal="endurance">
-                    <div style="font-size: 32px; margin-bottom: 10px;">🏃</div>
-                    <strong>Endurance</strong>
+                <div class="goal-option" data-goal="content-creation">
+                    <div style="font-size: 32px; margin-bottom: 10px;">📱</div>
+                    <strong>Content & Marketing</strong>
+                    <p style="font-size: 12px; color: #666; margin: 5px 0;">Build social media presence and content strategy</p>
                 </div>
-                <div class="goal-option" data-goal="strength">
-                    <div style="font-size: 32px; margin-bottom: 10px;">🏋️</div>
-                    <strong>Strength</strong>
+                <div class="goal-option" data-goal="professional-dev">
+                    <div style="font-size: 32px; margin-bottom: 10px;">🎓</div>
+                    <strong>Professional Development</strong>
+                    <p style="font-size: 12px; color: #666; margin: 5px 0;">Advance certifications and expertise</p>
                 </div>
-                <div class="goal-option" data-goal="flexibility">
-                    <div style="font-size: 32px; margin-bottom: 10px;">🧘</div>
-                    <strong>Flexibility</strong>
+                <div class="goal-option" data-goal="business-systems">
+                    <div style="font-size: 32px; margin-bottom: 10px;">⚙️</div>
+                    <strong>Business Systems</strong>
+                    <p style="font-size: 12px; color: #666; margin: 5px 0;">Streamline operations and client management</p>
                 </div>
-                <div class="goal-option" data-goal="general-health">
-                    <div style="font-size: 32px; margin-bottom: 10px;">❤️</div>
-                    <strong>General Health</strong>
+                <div class="goal-option" data-goal="specialization">
+                    <div style="font-size: 32px; margin-bottom: 10px;">🎯</div>
+                    <strong>Specialization</strong>
+                    <p style="font-size: 12px; color: #666; margin: 5px 0;">Develop niche expertise or service offerings</p>
                 </div>
             </div>
 
