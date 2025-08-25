@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymBag - Enhanced Trainer Onboarding</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="enhanced-onboarding.css">
+</head>
+<body>
+    <div class="onboarding-container">
+        <!-- Progress Indicator -->
+        <div class="progress-header">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 10%"></div>
+            </div>
+            <div class="step-indicators">
+                <span class="step-dot active" data-step="1"></span>
+                <span class="step-dot" data-step="2"></span>
+                <span class="step-dot" data-step="3"></span>
+                <span class="step-dot" data-step="4"></span>
+                <span class="step-dot" data-step="5"></span>
+                <span class="step-dot" data-step="6"></span>
+                <span class="step-dot" data-step="7"></span>
+                <span class="step-dot" data-step="8"></span>
+                <span class="step-dot" data-step="9"></span>
+                <span class="step-dot" data-step="10"></span>
+            </div>
+        </div>
+
+        <!-- Step 1: Welcome -->
+        <div class="onboarding-step active" id="step-1">
+            <div class="step-content">
+                <h1 class="welcome-title">Welcome to GymBag Pro! 🎯</h1>
+                <p class="welcome-subtitle">Let's build your personalized trainer success roadmap in just 5 minutes</p>
+                
+                <div class="value-props">
+                    <div class="value-item">
+                        <span class="value-icon">📊</span>
+                        <h3>Smart Business Insights</h3>
+                        <p>Get personalized benchmarks and growth strategies based on your experience level</p>
+                    </div>
+                    <div class="value-item">
+                        <span class="value-icon">💰</span>
+                        <h3>Revenue Optimization</h3>
+                        <p>Identify quick wins to increase your monthly revenue by 30-50%</p>
+                    </div>
+                    <div class="value-item">
+                        <span class="value-icon">🚀</span>
+                        <h3>30-Day Success Plan</h3>
+                        <p>Get a customized action plan tailored to your biggest challenges</p>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-lg" onclick="nextStep()">Let's Get Started →</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Business Assessment -->
+        <div class="onboarding-step" id="step-2">
+            <div class="step-content">
+                <h2>Tell us about your training business</h2>
+                <p class="step-description">This helps us customize everything to your current situation</p>
+                
+                <div class="form-section">
+                    <label class="form-label">How long have you been a personal trainer?</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="experienceLevel" data-value="just-starting">
+                            <span class="option-emoji">🌱</span>
+                            <span class="option-text">Just Starting</span>
+                            <span class="option-subtext">Less than 1 year</span>
+                        </button>
+                        <button class="option-card" data-field="experienceLevel" data-value="1-2years">
+                            <span class="option-emoji">📈</span>
+                            <span class="option-text">Building</span>
+                            <span class="option-subtext">1-2 years</span>
+                        </button>
+                        <button class="option-card" data-field="experienceLevel" data-value="3-5years">
+                            <span class="option-emoji">💪</span>
+                            <span class="option-text">Established</span>
+                            <span class="option-subtext">3-5 years</span>
+                        </button>
+                        <button class="option-card" data-field="experienceLevel" data-value="5+years">
+                            <span class="option-emoji">🏆</span>
+                            <span class="option-text">Veteran</span>
+                            <span class="option-subtext">5+ years</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">How many clients do you currently train?</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="currentClientLoad" data-value="0-5">
+                            <span class="option-number">0-5</span>
+                            <span class="option-text">Starting Out</span>
+                        </button>
+                        <button class="option-card" data-field="currentClientLoad" data-value="6-15">
+                            <span class="option-number">6-15</span>
+                            <span class="option-text">Part-Time</span>
+                        </button>
+                        <button class="option-card" data-field="currentClientLoad" data-value="16-30">
+                            <span class="option-number">16-30</span>
+                            <span class="option-text">Full-Time</span>
+                        </button>
+                        <button class="option-card" data-field="currentClientLoad" data-value="30+">
+                            <span class="option-number">30+</span>
+                            <span class="option-text">Fully Booked</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Where do you primarily train clients?</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="primaryLocation" data-value="commercial-gym">
+                            <span class="option-emoji">🏢</span>
+                            <span class="option-text">Commercial Gym</span>
+                        </button>
+                        <button class="option-card" data-field="primaryLocation" data-value="home-studio">
+                            <span class="option-emoji">🏠</span>
+                            <span class="option-text">Home Studio</span>
+                        </button>
+                        <button class="option-card" data-field="primaryLocation" data-value="client-homes">
+                            <span class="option-emoji">🚗</span>
+                            <span class="option-text">Client Homes</span>
+                        </button>
+                        <button class="option-card" data-field="primaryLocation" data-value="outdoor">
+                            <span class="option-emoji">🌳</span>
+                            <span class="option-text">Outdoor/Parks</span>
+                        </button>
+                        <button class="option-card" data-field="primaryLocation" data-value="virtual">
+                            <span class="option-emoji">💻</span>
+                            <span class="option-text">Virtual/Online</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">What stage is your business in?</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="businessStage" data-value="planning">
+                            <span class="option-text">Planning to Start</span>
+                        </button>
+                        <button class="option-card" data-field="businessStage" data-value="building">
+                            <span class="option-text">Building Client Base</span>
+                        </button>
+                        <button class="option-card" data-field="businessStage" data-value="growing">
+                            <span class="option-text">Growing Steadily</span>
+                        </button>
+                        <button class="option-card" data-field="businessStage" data-value="scaling">
+                            <span class="option-text">Scaling/Expanding</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">What's your biggest challenge right now?</label>
+                    <div class="option-grid vertical">
+                        <button class="option-card wide" data-field="biggestChallenge" data-value="finding-clients">
+                            <span class="option-text">Finding New Clients</span>
+                        </button>
+                        <button class="option-card wide" data-field="biggestChallenge" data-value="retaining-clients">
+                            <span class="option-text">Retaining Clients</span>
+                        </button>
+                        <button class="option-card wide" data-field="biggestChallenge" data-value="pricing">
+                            <span class="option-text">Pricing & Packages</span>
+                        </button>
+                        <button class="option-card wide" data-field="biggestChallenge" data-value="time-management">
+                            <span class="option-text">Time Management</span>
+                        </button>
+                        <button class="option-card wide" data-field="biggestChallenge" data-value="marketing">
+                            <span class="option-text">Marketing & Visibility</span>
+                        </button>
+                        <button class="option-card wide" data-field="biggestChallenge" data-value="admin">
+                            <span class="option-text">Admin & Operations</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Live Insight Display -->
+                <div class="insight-preview" id="business-insight" style="display: none;">
+                    <h3>💡 Insight Based on Your Profile</h3>
+                    <p id="insight-text"></p>
+                </div>
+                
+                <div class="step-navigation">
+                    <button class="btn btn-secondary" onclick="previousStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()" id="step-2-next">Continue →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Financial Setup -->
+        <div class="onboarding-step" id="step-3">
+            <div class="step-content">
+                <h2>Let's set up your financial goals</h2>
+                <p class="step-description">Understanding your revenue helps us identify growth opportunities</p>
+                
+                <div class="form-section">
+                    <label class="form-label">Current monthly revenue?</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="currentMonthlyRevenue" data-value="under-1k">
+                            <span class="option-text">Under $1K</span>
+                        </button>
+                        <button class="option-card" data-field="currentMonthlyRevenue" data-value="1k-3k">
+                            <span class="option-text">$1K - $3K</span>
+                        </button>
+                        <button class="option-card" data-field="currentMonthlyRevenue" data-value="3k-7k">
+                            <span class="option-text">$3K - $7K</span>
+                        </button>
+                        <button class="option-card" data-field="currentMonthlyRevenue" data-value="7k-15k">
+                            <span class="option-text">$7K - $15K</span>
+                        </button>
+                        <button class="option-card" data-field="currentMonthlyRevenue" data-value="15k+">
+                            <span class="option-text">$15K+</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Revenue goal for next 6 months?</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="revenueGoal" data-value="same">
+                            <span class="option-text">Maintain Current</span>
+                        </button>
+                        <button class="option-card" data-field="revenueGoal" data-value="50%">
+                            <span class="option-text">+50% Growth</span>
+                        </button>
+                        <button class="option-card" data-field="revenueGoal" data-value="double">
+                            <span class="option-text">Double It</span>
+                        </button>
+                        <button class="option-card" data-field="revenueGoal" data-value="custom">
+                            <span class="option-text">Custom Target</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Your typical session rate?</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="sessionPricing" data-value="30-50">
+                            <span class="option-text">$30-50</span>
+                        </button>
+                        <button class="option-card" data-field="sessionPricing" data-value="50-75">
+                            <span class="option-text">$50-75</span>
+                        </button>
+                        <button class="option-card" data-field="sessionPricing" data-value="75-100">
+                            <span class="option-text">$75-100</span>
+                        </button>
+                        <button class="option-card" data-field="sessionPricing" data-value="100-150">
+                            <span class="option-text">$100-150</span>
+                        </button>
+                        <button class="option-card" data-field="sessionPricing" data-value="150+">
+                            <span class="option-text">$150+</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">What packages do you offer? (Select all that apply)</label>
+                    <div class="option-grid">
+                        <button class="option-card multi-select" data-field="packageTypes" data-value="single">
+                            <span class="option-text">Single Sessions</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="packageTypes" data-value="monthly">
+                            <span class="option-text">Monthly Packages</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="packageTypes" data-value="quarterly">
+                            <span class="option-text">Quarterly Programs</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="packageTypes" data-value="annual">
+                            <span class="option-text">Annual Memberships</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">How do clients pay you? (Select all that apply)</label>
+                    <div class="option-grid">
+                        <button class="option-card multi-select" data-field="paymentMethods" data-value="cash">
+                            <span class="option-text">Cash/Check</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="paymentMethods" data-value="venmo">
+                            <span class="option-text">Venmo/PayPal</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="paymentMethods" data-value="credit">
+                            <span class="option-text">Credit Cards</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="paymentMethods" data-value="software">
+                            <span class="option-text">Fitness Software</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Revenue Calculator Preview -->
+                <div class="revenue-calculator" id="revenue-preview" style="display: none;">
+                    <h3>📊 Revenue Potential Calculator</h3>
+                    <div class="calc-results">
+                        <div class="calc-item">
+                            <span class="calc-label">Current Monthly:</span>
+                            <span class="calc-value" id="current-revenue">$0</span>
+                        </div>
+                        <div class="calc-item">
+                            <span class="calc-label">Potential with optimizations:</span>
+                            <span class="calc-value highlight" id="potential-revenue">$0</span>
+                        </div>
+                        <div class="calc-item">
+                            <span class="calc-label">Possible increase:</span>
+                            <span class="calc-value success" id="revenue-increase">+$0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-navigation">
+                    <button class="btn btn-secondary" onclick="previousStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Client Demographics -->
+        <div class="onboarding-step" id="step-4">
+            <div class="step-content">
+                <h2>Who are your ideal clients?</h2>
+                <p class="step-description">This helps us tailor your marketing and service strategies</p>
+                
+                <div class="form-section">
+                    <label class="form-label">Client age groups you work with (Select all)</label>
+                    <div class="option-grid">
+                        <button class="option-card multi-select" data-field="clientAgeGroups" data-value="teens">
+                            <span class="option-text">Teens (13-17)</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="clientAgeGroups" data-value="young-adults">
+                            <span class="option-text">Young Adults (18-30)</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="clientAgeGroups" data-value="adults">
+                            <span class="option-text">Adults (30-50)</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="clientAgeGroups" data-value="active-aging">
+                            <span class="option-text">Active Aging (50+)</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Most common client goals (Select top 3)</label>
+                    <div class="option-grid">
+                        <button class="option-card multi-select limit-3" data-field="clientGoals" data-value="weight-loss">
+                            <span class="option-emoji">⚖️</span>
+                            <span class="option-text">Weight Loss</span>
+                        </button>
+                        <button class="option-card multi-select limit-3" data-field="clientGoals" data-value="muscle-gain">
+                            <span class="option-emoji">💪</span>
+                            <span class="option-text">Muscle Gain</span>
+                        </button>
+                        <button class="option-card multi-select limit-3" data-field="clientGoals" data-value="athletic">
+                            <span class="option-emoji">🏃</span>
+                            <span class="option-text">Athletic Performance</span>
+                        </button>
+                        <button class="option-card multi-select limit-3" data-field="clientGoals" data-value="rehab">
+                            <span class="option-emoji">🏥</span>
+                            <span class="option-text">Rehabilitation</span>
+                        </button>
+                        <button class="option-card multi-select limit-3" data-field="clientGoals" data-value="general">
+                            <span class="option-emoji">❤️</span>
+                            <span class="option-text">General Fitness</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Client fitness levels</label>
+                    <div class="option-grid">
+                        <button class="option-card multi-select" data-field="fitnessLevels" data-value="beginners">
+                            <span class="option-text">Complete Beginners</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="fitnessLevels" data-value="some-experience">
+                            <span class="option-text">Some Experience</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="fitnessLevels" data-value="intermediate">
+                            <span class="option-text">Intermediate</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="fitnessLevels" data-value="advanced">
+                            <span class="option-text">Advanced/Athletes</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Session formats you offer</label>
+                    <div class="option-grid">
+                        <button class="option-card multi-select" data-field="sessionFormats" data-value="1-on-1">
+                            <span class="option-text">1-on-1</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="sessionFormats" data-value="small-groups">
+                            <span class="option-text">Small Groups (2-4)</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="sessionFormats" data-value="group-classes">
+                            <span class="option-text">Group Classes</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="sessionFormats" data-value="virtual">
+                            <span class="option-text">Virtual Sessions</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Your training specializations</label>
+                    <div class="option-grid">
+                        <button class="option-card multi-select" data-field="specializations" data-value="strength">
+                            <span class="option-text">Strength Training</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="specializations" data-value="cardio">
+                            <span class="option-text">Cardio/Endurance</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="specializations" data-value="flexibility">
+                            <span class="option-text">Flexibility/Mobility</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="specializations" data-value="sport-specific">
+                            <span class="option-text">Sport-Specific</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="specializations" data-value="medical">
+                            <span class="option-text">Medical/Rehab</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="step-navigation">
+                    <button class="btn btn-secondary" onclick="previousStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Marketing & Lead Generation -->
+        <div class="onboarding-step" id="step-5">
+            <div class="step-content">
+                <h2>How do you attract new clients?</h2>
+                <p class="step-description">Let's optimize your marketing and lead generation</p>
+                
+                <div class="form-section">
+                    <label class="form-label">Current marketing methods (Select all)</label>
+                    <div class="option-grid">
+                        <button class="option-card multi-select" data-field="currentMarketing" data-value="word-of-mouth">
+                            <span class="option-text">Word of Mouth</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="currentMarketing" data-value="social-media">
+                            <span class="option-text">Social Media</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="currentMarketing" data-value="gym-referrals">
+                            <span class="option-text">Gym Referrals</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="currentMarketing" data-value="website">
+                            <span class="option-text">Website/SEO</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="currentMarketing" data-value="paid-ads">
+                            <span class="option-text">Paid Ads</span>
+                        </button>
+                        <button class="option-card multi-select" data-field="currentMarketing" data-value="networking">
+                            <span class="option-text">Networking Events</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Social media activity level</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="socialMediaPresence" data-value="very-active">
+                            <span class="option-text">Very Active</span>
+                            <span class="option-subtext">Daily posts</span>
+                        </button>
+                        <button class="option-card" data-field="socialMediaPresence" data-value="somewhat">
+                            <span class="option-text">Somewhat Active</span>
+                            <span class="option-subtext">Weekly posts</span>
+                        </button>
+                        <button class="option-card" data-field="socialMediaPresence" data-value="minimal">
+                            <span class="option-text">Minimal</span>
+                            <span class="option-subtext">Occasional posts</span>
+                        </button>
+                        <button class="option-card" data-field="socialMediaPresence" data-value="none">
+                            <span class="option-text">None</span>
+                            <span class="option-subtext">No social media</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">New client goal per month</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="leadGenGoals" data-value="2-5">
+                            <span class="option-text">2-5 clients</span>
+                        </button>
+                        <button class="option-card" data-field="leadGenGoals" data-value="5-10">
+                            <span class="option-text">5-10 clients</span>
+                        </button>
+                        <button class="option-card" data-field="leadGenGoals" data-value="10+">
+                            <span class="option-text">10+ clients</span>
+                        </button>
+                        <button class="option-card" data-field="leadGenGoals" data-value="maintain">
+                            <span class="option-text">Just maintain</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Marketing budget</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="marketingBudget" data-value="0">
+                            <span class="option-text">$0/month</span>
+                        </button>
+                        <button class="option-card" data-field="marketingBudget" data-value="50-200">
+                            <span class="option-text">$50-200/month</span>
+                        </button>
+                        <button class="option-card" data-field="marketingBudget" data-value="200-500">
+                            <span class="option-text">$200-500/month</span>
+                        </button>
+                        <button class="option-card" data-field="marketingBudget" data-value="500+">
+                            <span class="option-text">$500+/month</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Content creation frequency</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="contentCreation" data-value="daily">
+                            <span class="option-text">Daily</span>
+                        </button>
+                        <button class="option-card" data-field="contentCreation" data-value="weekly">
+                            <span class="option-text">Weekly</span>
+                        </button>
+                        <button class="option-card" data-field="contentCreation" data-value="occasional">
+                            <span class="option-text">Occasional</span>
+                        </button>
+                        <button class="option-card" data-field="contentCreation" data-value="rarely">
+                            <span class="option-text">Rarely</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="step-navigation">
+                    <button class="btn btn-secondary" onclick="previousStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6: Quick Wins & Opportunities -->
+        <div class="onboarding-step" id="step-6">
+            <div class="step-content">
+                <h2>🎯 Your Quick Win Opportunities</h2>
+                <p class="step-description">Based on your profile, here are immediate opportunities to grow your business</p>
+                
+                <div class="quick-wins-container" id="quick-wins-list">
+                    <!-- Dynamically populated quick wins -->
+                </div>
+                
+                <div class="step-navigation">
+                    <button class="btn btn-secondary" onclick="previousStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 7: Personalized Tasks -->
+        <div class="onboarding-step" id="step-7">
+            <div class="step-content">
+                <h2>📋 Your Personalized Action Plan</h2>
+                <p class="step-description">We've created custom tasks based on your biggest challenges</p>
+                
+                <div class="tasks-container" id="personalized-tasks">
+                    <!-- Dynamically populated tasks -->
+                </div>
+                
+                <div class="step-navigation">
+                    <button class="btn btn-secondary" onclick="previousStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 8: Business Benchmarks -->
+        <div class="onboarding-step" id="step-8">
+            <div class="step-content">
+                <h2>📊 How You Compare to Other Trainers</h2>
+                <p class="step-description">See where you stand in the market</p>
+                
+                <div class="benchmark-container" id="benchmark-report">
+                    <!-- Dynamically populated benchmarks -->
+                </div>
+                
+                <div class="step-navigation">
+                    <button class="btn btn-secondary" onclick="previousStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 9: 30-Day Success Plan -->
+        <div class="onboarding-step" id="step-9">
+            <div class="step-content">
+                <h2>🚀 Your 30-Day Success Plan</h2>
+                <p class="step-description">A week-by-week roadmap to jumpstart your growth</p>
+                
+                <div class="success-plan" id="thirty-day-plan">
+                    <!-- Dynamically populated 30-day plan -->
+                </div>
+                
+                <div class="step-navigation">
+                    <button class="btn btn-secondary" onclick="previousStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 10: Complete Profile -->
+        <div class="onboarding-step" id="step-10">
+            <div class="step-content">
+                <h2>Final Step: Complete Your Profile</h2>
+                <p class="step-description">Add some personal details to finish setup</p>
+                
+                <div class="form-section">
+                    <label class="form-label">Professional Bio</label>
+                    <textarea class="form-textarea" id="trainer-bio" placeholder="Tell potential clients about your experience, philosophy, and what makes you unique..." rows="4"></textarea>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" id="trainer-phone" placeholder="(555) 123-4567">
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Years in Business</label>
+                    <input type="number" class="form-input" id="years-in-business" placeholder="e.g., 3" min="0" max="50">
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Success Story (Optional)</label>
+                    <textarea class="form-textarea" id="success-story" placeholder="Share a client transformation or achievement you're proud of..." rows="3"></textarea>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Preferred Communication Style</label>
+                    <div class="option-grid">
+                        <button class="option-card" data-field="communicationPreference" data-value="direct">
+                            <span class="option-text">Direct & Efficient</span>
+                        </button>
+                        <button class="option-card" data-field="communicationPreference" data-value="supportive">
+                            <span class="option-text">Supportive & Encouraging</span>
+                        </button>
+                        <button class="option-card" data-field="communicationPreference" data-value="data-driven">
+                            <span class="option-text">Data-Driven</span>
+                        </button>
+                        <button class="option-card" data-field="communicationPreference" data-value="motivational">
+                            <span class="option-text">Motivational</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="step-navigation">
+                    <button class="btn btn-secondary" onclick="previousStep()">← Back</button>
+                    <button class="btn btn-primary btn-complete" onclick="completeEnhancedOnboarding()">Complete Setup ✓</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Step -->
+        <div class="onboarding-step" id="completion-step" style="display: none;">
+            <div class="step-content completion-content">
+                <div class="completion-animation">
+                    <span class="completion-icon">🎉</span>
+                </div>
+                <h1>You're All Set!</h1>
+                <p class="completion-message">Your personalized trainer dashboard is ready</p>
+                
+                <div class="completion-summary">
+                    <h3>What we've set up for you:</h3>
+                    <ul class="completion-list">
+                        <li>✓ Personalized business insights</li>
+                        <li>✓ <span id="quick-wins-count">5</span> quick win opportunities identified</li>
+                        <li>✓ <span id="tasks-count">12</span> custom tasks created</li>
+                        <li>✓ 30-day success plan generated</li>
+                        <li>✓ Revenue optimization strategies</li>
+                    </ul>
+                </div>
+                
+                <button class="btn btn-primary btn-lg" onclick="goToEnhancedDashboard()">
+                    Go to Your Dashboard →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Setting up your personalized experience...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script type="module" src="enhanced-onboarding-controller.js"></script>
+</body>
+</html>
