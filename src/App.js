@@ -1002,27 +1002,228 @@ const getRevenueChange = (current, previous) => {
           </div>
         </SimpleForm>
       )}
-
+            {/* Post form */}
       {showPostForm && (
-        <SimpleForm
-          title="Plan Post"
-          onSubmit={() => setShowPostForm(false)}
-          onCancel={() => setShowPostForm(false)}
-        >
-          <div className="space-y-4">
-            <input type="text" placeholder="Post Title/Idea" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <select className="w-full p-2 border border-gray-300 rounded-lg">
-              <option>Select Platform</option>
-              <option>Instagram</option>
-              <option>TikTok</option>
-              <option>Facebook</option>
-              <option>YouTube</option>
-            </select>
-            <input type="date" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <textarea placeholder="Notes" className="w-full p-2 border border-gray-300 rounded-lg h-20" />
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] flex flex-col">
+      {/* Fixed Header */}
+      <div className="p-6 border-b border-gray-200">
+        <h2 className="text-xl font-semibold">Plan Social Media Post</h2>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-5">
+        
+        {/* Basic Info */}
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Post Title/Topic *</label>
+            <input 
+              type="text" 
+              placeholder="e.g., Monday Motivation - Deadlift Form Tips" 
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+              required
+            />
           </div>
-        </SimpleForm>
-      )}
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Platform *</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option value="">Select Platform</option>
+                <option value="Instagram">Instagram</option>
+                <option value="TikTok">TikTok</option>
+                <option value="Facebook">Facebook</option>
+                <option value="YouTube">YouTube</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="Twitter">Twitter/X</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Post Type</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option value="workout-tip">Workout Tip</option>
+                <option value="transformation">Client Transformation</option>
+                <option value="motivation">Motivation</option>
+                <option value="nutrition">Nutrition Advice</option>
+                <option value="behind-scenes">Behind the Scenes</option>
+                <option value="educational">Educational</option>
+                <option value="promotional">Promotional</option>
+                <option value="community">Community Engagement</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Scheduling */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Scheduling</h4>
+          
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Planned Date *</label>
+              <input 
+                type="date" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Planned Time</label>
+              <input 
+                type="time" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+              />
+            </div>
+          </div>
+          
+          <div className="mt-3">
+            <label className="flex items-center gap-2">
+              <input type="checkbox" className="rounded" />
+              <span className="text-sm text-gray-600">Set reminder 30 minutes before</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Content Planning */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Content Planning</h4>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Caption/Content Ideas</label>
+              <textarea 
+                placeholder="Draft your caption, key points to cover, or content outline..." 
+                className="w-full p-3 border border-gray-300 rounded-lg h-24 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Hashtags</label>
+              <input 
+                type="text" 
+                placeholder="#fitness #personaltrainer #motivation #workout" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+              />
+              <p className="text-xs text-gray-500 mt-1">Separate hashtags with spaces</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Call to Action</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option value="">Select CTA (optional)</option>
+                <option value="book-consultation">Book a consultation</option>
+                <option value="dm-questions">DM for questions</option>
+                <option value="like-share">Like and share</option>
+                <option value="follow-more">Follow for more tips</option>
+                <option value="comment-experience">Comment your experience</option>
+                <option value="tag-friend">Tag a workout buddy</option>
+                <option value="visit-website">Visit website</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Assets & Media */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Media Assets</h4>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Content Type</label>
+              <div className="grid grid-cols-3 gap-2">
+                <label className="flex items-center gap-2 p-2 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input type="radio" name="contentType" value="photo" className="text-purple-600" />
+                  <span className="text-sm">Photo</span>
+                </label>
+                <label className="flex items-center gap-2 p-2 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input type="radio" name="contentType" value="video" className="text-purple-600" />
+                  <span className="text-sm">Video</span>
+                </label>
+                <label className="flex items-center gap-2 p-2 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input type="radio" name="contentType" value="carousel" className="text-purple-600" />
+                  <span className="text-sm">Carousel</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Asset Notes</label>
+              <textarea 
+                placeholder="Describe photos/videos needed, shot list, props, locations..." 
+                className="w-full p-3 border border-gray-300 rounded-lg h-20 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Goals & Tracking */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Goals & Tracking</h4>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Primary Goal</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option value="awareness">Brand Awareness</option>
+                <option value="engagement">Engagement</option>
+                <option value="leads">Generate Leads</option>
+                <option value="education">Educate Audience</option>
+                <option value="community">Build Community</option>
+                <option value="promotion">Promote Services</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Target Audience</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option value="current-clients">Current Clients</option>
+                <option value="fitness-beginners">Fitness Beginners</option>
+                <option value="weight-loss">Weight Loss Seekers</option>
+                <option value="strength-training">Strength Training</option>
+                <option value="general-fitness">General Fitness</option>
+                <option value="local-community">Local Community</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Notes */}
+        <div className="border-t border-gray-200 pt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Additional Notes</label>
+            <textarea 
+              placeholder="Any other details, collaboration notes, or reminders..." 
+              className="w-full p-3 border border-gray-300 rounded-lg h-20 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+      </div>
+      
+      {/* Fixed Footer */}
+      <div className="p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => setShowPostForm(false)}
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => setShowPostForm(false)}
+            className="flex-1 px-4 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 font-medium"
+          >
+            Save Post Plan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
       {showLeadForm && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
