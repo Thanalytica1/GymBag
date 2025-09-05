@@ -9,7 +9,9 @@ const GymBagApp = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   
   // Sample data - in a real app this would come from a backend
-  const [clients, setClients] = useState([
+  // Replace your existing leads state initialization (around line 114) with this:
+
+const [clients, setClients] = useState([
     {
       id: 1,
       name: 'Sarah Johnson',
@@ -169,26 +171,55 @@ const GymBagApp = () => {
     }
   ]);
 
-  const [leads, setLeads] = useState([
-    {
-      id: 1,
-      name: 'Jessica Smith',
-      platform: 'Instagram',
-      handle: '@jess_fitness',
-      status: 'new',
-      nextActionDate: '2025-09-05',
-      notes: 'Interested in nutrition coaching'
-    },
-    {
-      id: 2,
-      name: 'David Wilson',
-      platform: 'Facebook',
-      handle: 'David W.',
-      status: 'contacted',
-      nextActionDate: '2025-09-06',
-      notes: 'Follow up on consultation call'
-    }
-  ]);
+  // Replace your existing leads state initialization (around line 114) with this:
+
+const [leads, setLeads] = useState([
+  {
+    id: 1,
+    name: 'Jessica Smith',
+    platform: 'Instagram',
+    handle: '@jess_fitness',
+    status: 'new',
+    nextActionDate: '2025-09-05',
+    email: 'jessica.smith@email.com',
+    phone: '(555) 234-5678',
+    primaryInterest: 'nutrition',
+    budgetRange: '75-100',
+    leadSource: 'social-media-post',
+    referralSource: '',
+    notes: 'Interested in nutrition coaching. Very motivated, has specific weight loss goals for her wedding in 6 months.'
+  },
+  {
+    id: 2,
+    name: 'David Wilson',
+    platform: 'Facebook',
+    handle: 'David W.',
+    status: 'contacted',
+    nextActionDate: '2025-09-06',
+    email: 'david.w@email.com',
+    phone: '(555) 345-6789',
+    primaryInterest: 'strength-training',
+    budgetRange: 'package-deal',
+    leadSource: 'referral',
+    referralSource: 'Sarah Johnson',
+    notes: 'Follow up on consultation call. Interested in 10-pack package. Former athlete looking to get back in shape.'
+  },
+  {
+    id: 3,
+    name: 'Maria Rodriguez',
+    platform: 'TikTok',
+    handle: '@maria_runs',
+    status: 'follow-up',
+    nextActionDate: '2025-09-08',
+    email: 'maria.r@email.com',
+    phone: '',
+    primaryInterest: 'cardio-fitness',
+    budgetRange: '50-75',
+    leadSource: 'social-media-post',
+    referralSource: '',
+    notes: 'Saw our HIIT workout video. Training for first marathon. Prefers morning sessions.'
+  }
+]);
 
   // Form states
   const [showClientForm, setShowClientForm] = useState(false);
