@@ -771,107 +771,492 @@ const getRevenueChange = (current, previous) => {
     </div>
   );
 
-  // Client Form Component
-  const ClientForm = () => {
-    const [formData, setFormData] = useState(editingClient || {
-      name: '',
-      phone: '',
-      email: '',
-      status: 'prospect',
-      notes: ''
-    });
+  // Enhanced Client Form Component
+const ClientForm = () => {
+  const [formData, setFormData] = useState(editingClient || {
+    // Basic Info
+    name: '',
+    phone: '',
+    email: '',
+    status: 'prospect',
+    
+    // Personal Details
+    dateOfBirth: '',
+    gender: '',
+    occupation: '',
+    
+    // Contact & Emergency
+    address: '',
+    emergencyContactName: '',
+    emergencyContactPhone: '',
+    emergencyContactRelation: '',
+    
+    // Health & Fitness
+    fitnessGoals: '',
+    fitnessLevel: '',
+    medicalConditions: '',
+    injuries: '',
+    medications: '',
+    
+    // Preferences
+    preferredTimes: '',
+    communicationPreference: 'email',
+    
+    // Business
+    referralSource: '',
+    notes: ''
+  });
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
+  const [errors, setErrors] = useState({});
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 4;
+
+  // Form validation
+  const validateStep = (step) => {
+    const newErrors = {};
+    
+    if (step === 1) {
+      if (!formData.name.trim()) newErrors.name = 'Name is required';
+      if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
+        newErrors.email = 'Invalid email format';
+      }
+      if (formData.phone && !/^\(\d{3}\) \d{3}-\d{4}$/.test(formData.phone)) {
+        newErrors.phone = 'Format: (555) 123-4567';
+      }
+    }
+    
+    return newErrors;
+  };
+
+  // Phone number formatting
+  const formatPhoneNumber = (value) => {
+    const phoneNumber = value.replace(/[^\d]/g, '');
+    const phoneNumberLength = phoneNumber.length;
+    
+    if (phoneNumberLength < 4) return phoneNumber;
+    if (phoneNumberLength < 7) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+    }
+    return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+  };
+
+  const handlePhoneChange = (e) => {
+    const formatted = formatPhoneNumber(e.target.value);
+    setFormData({...formData, phone: formatted});
+  };
+
+  const handleNext = () => {
+    const stepErrors = validateStep(currentStep);
+    if (Object.keys(stepErrors).length === 0) {
+      setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+      setErrors({});
+    } else {
+      setErrors(stepErrors);
+    }
+  };
+
+  const handlePrevious = () => {
+    setCurrentStep(prev => Math.max(prev - 1, 1));
+    setErrors({});
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Validate all steps
+    let allErrors = {};
+    for (let step = 1; step <= totalSteps; step++) {
+      allErrors = {...allErrors, ...validateStep(step)};
+    }
+    
+    if (Object.keys(allErrors).length === 0) {
       if (editingClient) {
-        setClients(prev => prev.map(c => c.id === editingClient.id ? { ...c, ...formData } : c));
+        setClients(prev => prev.map(c => 
+          c.id === editingClient.id ? { ...c, ...formData, lastUpdated: new Date().toISOString() } : c
+        ));
       } else {
-        setClients(prev => [...prev, { ...formData, id: Date.now() }]);
+        setClients(prev => [...prev, { 
+          ...formData, 
+          id: Date.now(), 
+          createdAt: new Date().toISOString(),
+          lastSession: null,
+          nextSession: null
+        }]);
       }
       setShowClientForm(false);
       setEditingClient(null);
-    };
+    } else {
+      setErrors(allErrors);
+      // Go to first step with errors
+      const firstErrorStep = Object.keys(allErrors).some(key => ['name', 'email', 'phone'].includes(key)) ? 1 : 2;
+      setCurrentStep(firstErrorStep);
+    }
+  };
 
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-lg p-6 w-full max-w-md">
-          <h2 className="text-xl font-semibold mb-4">
-            {editingClient ? 'Edit Client' : 'Add Client'}
+  // Client Form field component
+  const FormField = ({ label, error, required, children, className = "" }) => (
+    <div className={`space-y-1 ${className}`}>
+      <label className="block text-sm font-medium text-gray-700">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+      {children}
+      {error && (
+        <div className="flex items-center gap-1 text-red-600 text-sm">
+          <span>⚠</span>
+          {error}
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] flex flex-col">
+        {/* Fixed Header */}
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-xl font-semibold">
+            {editingClient ? 'Edit Client' : 'Add New Client'}
           </h2>
+          
+          {/* Progress Indicator */}
+          <div className="flex items-center gap-2 mt-4">
+            {Array.from({length: totalSteps}, (_, i) => (
+              <div key={i} className="flex items-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  i + 1 <= currentStep 
+                    ? 'bg-blue-500 text-white' 
+                    : 'bg-gray-200 text-gray-600'
+                }`}>
+                  {i + 1}
+                </div>
+                {i < totalSteps - 1 && (
+                  <div className={`w-8 h-0.5 ${
+                    i + 1 < currentStep ? 'bg-blue-500' : 'bg-gray-200'
+                  }`} />
+                )}
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-2 text-sm text-gray-600">
+            Step {currentStep} of {totalSteps}: {
+              currentStep === 1 ? 'Basic Information' :
+              currentStep === 2 ? 'Contact & Emergency' :
+              currentStep === 3 ? 'Health & Fitness' :
+              'Preferences & Notes'
+            }
+          </div>
+        </div>
+        
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-6">
           <form onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Name</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                  required
-                />
+            
+            {/* Step 1: Basic Information */}
+            {currentStep === 1 && (
+              <div className="space-y-4">
+                <FormField label="Full Name" error={errors.name} required>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter client's full name"
+                  />
+                </FormField>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <FormField label="Phone Number" error={errors.phone}>
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handlePhoneChange}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="(555) 123-4567"
+                      maxLength="14"
+                    />
+                  </FormField>
+
+                  <FormField label="Email Address" error={errors.email}>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="email@example.com"
+                    />
+                  </FormField>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <FormField label="Date of Birth">
+                    <input
+                      type="date"
+                      value={formData.dateOfBirth}
+                      onChange={(e) => setFormData({...formData, dateOfBirth: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </FormField>
+
+                  <FormField label="Gender">
+                    <select
+                      value={formData.gender}
+                      onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">Select</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="non-binary">Non-binary</option>
+                      <option value="prefer-not-to-say">Prefer not to say</option>
+                    </select>
+                  </FormField>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <FormField label="Client Status" required>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({...formData, status: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="prospect">Prospect</option>
+                      <option value="active">Active Client</option>
+                      <option value="inactive">Inactive</option>
+                      <option value="on-hold">On Hold</option>
+                    </select>
+                  </FormField>
+
+                  <FormField label="Occupation">
+                    <input
+                      type="text"
+                      value={formData.occupation}
+                      onChange={(e) => setFormData({...formData, occupation: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Job title/profession"
+                    />
+                  </FormField>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Phone</label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                />
+            )}
+
+            {/* Step 2: Contact & Emergency */}
+            {currentStep === 2 && (
+              <div className="space-y-4">
+                <FormField label="Address">
+                  <textarea
+                    value={formData.address}
+                    onChange={(e) => setFormData({...formData, address: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg h-16 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Street address, city, state, zip"
+                  />
+                </FormField>
+
+                <div className="border-t border-gray-200 pt-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">Emergency Contact</h4>
+                  
+                  <FormField label="Emergency Contact Name">
+                    <input
+                      type="text"
+                      value={formData.emergencyContactName}
+                      onChange={(e) => setFormData({...formData, emergencyContactName: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Full name"
+                    />
+                  </FormField>
+
+                  <div className="grid grid-cols-2 gap-3 mt-3">
+                    <FormField label="Emergency Contact Phone">
+                      <input
+                        type="tel"
+                        value={formData.emergencyContactPhone}
+                        onChange={(e) => setFormData({...formData, emergencyContactPhone: formatPhoneNumber(e.target.value)})}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="(555) 123-4567"
+                        maxLength="14"
+                      />
+                    </FormField>
+
+                    <FormField label="Relationship">
+                      <select
+                        value={formData.emergencyContactRelation}
+                        onChange={(e) => setFormData({...formData, emergencyContactRelation: e.target.value})}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="">Select</option>
+                        <option value="spouse">Spouse</option>
+                        <option value="parent">Parent</option>
+                        <option value="sibling">Sibling</option>
+                        <option value="child">Child</option>
+                        <option value="friend">Friend</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </FormField>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                />
+            )}
+
+            {/* Step 3: Health & Fitness */}
+            {currentStep === 3 && (
+              <div className="space-y-4">
+                <FormField label="Fitness Goals">
+                  <textarea
+                    value={formData.fitnessGoals}
+                    onChange={(e) => setFormData({...formData, fitnessGoals: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg h-20 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Weight loss, muscle building, improved strength, marathon training, etc."
+                  />
+                </FormField>
+
+                <FormField label="Current Fitness Level">
+                  <select
+                    value={formData.fitnessLevel}
+                    onChange={(e) => setFormData({...formData, fitnessLevel: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Select fitness level</option>
+                    <option value="beginner">Beginner (Little to no exercise)</option>
+                    <option value="novice">Novice (Some exercise, 1-2x/week)</option>
+                    <option value="intermediate">Intermediate (Regular exercise, 3-4x/week)</option>
+                    <option value="advanced">Advanced (Daily exercise, 5+ years)</option>
+                    <option value="athlete">Athlete/Competitive</option>
+                  </select>
+                </FormField>
+
+                <FormField label="Medical Conditions">
+                  <textarea
+                    value={formData.medicalConditions}
+                    onChange={(e) => setFormData({...formData, medicalConditions: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg h-16 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Diabetes, high blood pressure, heart conditions, etc. (leave blank if none)"
+                  />
+                </FormField>
+
+                <FormField label="Injuries or Physical Limitations">
+                  <textarea
+                    value={formData.injuries}
+                    onChange={(e) => setFormData({...formData, injuries: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg h-16 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Past injuries, current pain, movement restrictions, etc."
+                  />
+                </FormField>
+
+                <FormField label="Current Medications">
+                  <input
+                    type="text"
+                    value={formData.medications}
+                    onChange={(e) => setFormData({...formData, medications: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="List any medications that might affect training"
+                  />
+                </FormField>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Status</label>
-                <select
-                  value={formData.status}
-                  onChange={(e) => setFormData({...formData, status: e.target.value})}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                >
-                  <option value="prospect">Prospect</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
+            )}
+
+            {/* Step 4: Preferences & Notes */}
+            {currentStep === 4 && (
+              <div className="space-y-4">
+                <FormField label="Preferred Training Times">
+                  <textarea
+                    value={formData.preferredTimes}
+                    onChange={(e) => setFormData({...formData, preferredTimes: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg h-16 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="e.g., Mornings before work, evenings after 6pm, weekends only..."
+                  />
+                </FormField>
+
+                <FormField label="Communication Preference">
+                  <select
+                    value={formData.communicationPreference}
+                    onChange={(e) => setFormData({...formData, communicationPreference: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="email">Email</option>
+                    <option value="text">Text Message</option>
+                    <option value="phone">Phone Call</option>
+                    <option value="app">In-App Only</option>
+                  </select>
+                </FormField>
+
+                <FormField label="How did they find you?">
+                  <select
+                    value={formData.referralSource}
+                    onChange={(e) => setFormData({...formData, referralSource: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Select source</option>
+                    <option value="google">Google Search</option>
+                    <option value="social-media">Social Media</option>
+                    <option value="referral-client">Referred by Client</option>
+                    <option value="referral-friend">Referred by Friend</option>
+                    <option value="gym">Gym/Facility</option>
+                    <option value="website">Website</option>
+                    <option value="other">Other</option>
+                  </select>
+                </FormField>
+
+                <FormField label="Additional Notes">
+                  <textarea
+                    value={formData.notes}
+                    onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg h-24 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Special considerations, personality notes, motivation factors, scheduling constraints..."
+                  />
+                </FormField>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Notes</label>
-                <textarea
-                  value={formData.notes}
-                  onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                  className="w-full p-2 border border-gray-300 rounded-lg h-20"
-                />
-              </div>
-            </div>
-            <div className="flex gap-3 mt-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowClientForm(false);
-                  setEditingClient(null);
-                }}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-              >
-                {editingClient ? 'Update' : 'Add'} Client
-              </button>
-            </div>
+            )}
           </form>
         </div>
+        
+        {/* Fixed Footer */}
+        <div className="p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+          <div className="flex gap-3">
+            {currentStep > 1 && (
+              <button
+                type="button"
+                onClick={handlePrevious}
+                className="px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+              >
+                Previous
+              </button>
+            )}
+            
+            <button
+              type="button"
+              onClick={() => {
+                setShowClientForm(false);
+                setEditingClient(null);
+              }}
+              className="px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+            >
+              Cancel
+            </button>
+            
+            {currentStep < totalSteps ? (
+              <button
+                type="button"
+                onClick={handleNext}
+                className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium"
+              >
+                Next Step
+              </button>
+            ) : (
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium"
+              >
+                {editingClient ? 'Update Client' : 'Add Client'}
+              </button>
+            )}
+          </div>
+        </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   // Simple forms for other entities
   const SimpleForm = ({ title, onSubmit, onCancel, children }) => (
@@ -945,28 +1330,342 @@ const getRevenueChange = (current, previous) => {
       {/* Forms */}
       {showClientForm && <ClientForm />}
       
+
+      {/* SESSION FORM */}
+
       {showSessionForm && (
-        <SimpleForm
-          title="Add Session"
-          onSubmit={() => {
-            // Add session logic here
-            setShowSessionForm(false);
-          }}
-          onCancel={() => setShowSessionForm(false)}
-        >
-          <div className="space-y-4">
-            <select className="w-full p-2 border border-gray-300 rounded-lg">
-              <option>Select Client</option>
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] flex flex-col">
+      {/* Fixed Header */}
+      <div className="p-6 border-b border-gray-200">
+        <h2 className="text-xl font-semibold">Schedule Session</h2>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-5">
+        
+        {/* Client & Package Selection */}
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Client *</label>
+            <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">Select Client</option>
               {clients.map(client => (
                 <option key={client.id} value={client.id}>{client.name}</option>
               ))}
             </select>
-            <input type="date" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <input type="time" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <input type="text" placeholder="Location" className="w-full p-2 border border-gray-300 rounded-lg" />
           </div>
-        </SimpleForm>
-      )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Use Package Sessions</label>
+            <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">No package (one-time session)</option>
+              <option value="1">10-Pack 60min (7 sessions remaining)</option>
+              <option value="2">5-Pack 45min (3 sessions remaining)</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">Package sessions will be deducted when marked complete</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Session Type</label>
+            <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="personal-training">Personal Training</option>
+              <option value="consultation">Initial Consultation</option>
+              <option value="assessment">Fitness Assessment</option>
+              <option value="group-session">Group Session</option>
+              <option value="nutrition-coaching">Nutrition Coaching</option>
+              <option value="check-in">Progress Check-in</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Date & Time */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Date & Time</h4>
+          
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Date *</label>
+                <input 
+                  type="date" 
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Start Time *</label>
+                <input 
+                  type="time" 
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+              <div className="grid grid-cols-4 gap-2">
+                <button 
+                  type="button"
+                  className="p-2 border border-gray-300 rounded-lg text-sm hover:bg-blue-50 hover:border-blue-300 focus:ring-2 focus:ring-blue-500"
+                >
+                  30 min
+                </button>
+                <button 
+                  type="button"
+                  className="p-2 border border-blue-300 bg-blue-50 rounded-lg text-sm text-blue-700 font-medium"
+                >
+                  45 min
+                </button>
+                <button 
+                  type="button"
+                  className="p-2 border border-gray-300 rounded-lg text-sm hover:bg-blue-50 hover:border-blue-300 focus:ring-2 focus:ring-blue-500"
+                >
+                  60 min
+                </button>
+                <button 
+                  type="button"
+                  className="p-2 border border-gray-300 rounded-lg text-sm hover:bg-blue-50 hover:border-blue-300 focus:ring-2 focus:ring-blue-500"
+                >
+                  90 min
+                </button>
+              </div>
+              <div className="mt-2">
+                <input 
+                  type="number" 
+                  placeholder="Custom duration (minutes)" 
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" 
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="planned">Planned</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="tentative">Tentative</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Location */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Location</h4>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Location Type</label>
+              <div className="grid grid-cols-3 gap-2">
+                <button 
+                  type="button"
+                  className="p-2 border border-blue-300 bg-blue-50 rounded-lg text-sm text-blue-700 font-medium"
+                >
+                  Gym
+                </button>
+                <button 
+                  type="button"
+                  className="p-2 border border-gray-300 rounded-lg text-sm hover:bg-blue-50 hover:border-blue-300"
+                >
+                  Client Home
+                </button>
+                <button 
+                  type="button"
+                  className="p-2 border border-gray-300 rounded-lg text-sm hover:bg-blue-50 hover:border-blue-300"
+                >
+                  Outdoor
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Location Details</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Select or type location</option>
+                <option value="main-gym">Main Gym - Studio A</option>
+                <option value="main-gym-b">Main Gym - Studio B</option>
+                <option value="park-training">Central Park Training Area</option>
+                <option value="client-home">Client's Home Gym</option>
+                <option value="custom">Custom Location</option>
+              </select>
+            </div>
+
+            <div>
+              <input 
+                type="text" 
+                placeholder="Enter specific address or location details" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Session Planning */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Session Planning</h4>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Session Focus</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Select focus (optional)</option>
+                <option value="strength">Strength Training</option>
+                <option value="cardio">Cardio/Endurance</option>
+                <option value="flexibility">Flexibility/Mobility</option>
+                <option value="weight-loss">Weight Loss</option>
+                <option value="muscle-building">Muscle Building</option>
+                <option value="functional">Functional Movement</option>
+                <option value="sports-specific">Sports-Specific</option>
+                <option value="rehabilitation">Rehabilitation</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Session Objectives</label>
+              <textarea 
+                placeholder="Goals for this session, exercises to focus on, areas of improvement..." 
+                className="w-full p-3 border border-gray-300 rounded-lg h-20 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Equipment Needed</label>
+              <input 
+                type="text" 
+                placeholder="Dumbbells, resistance bands, yoga mat..." 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Recurring Sessions */}
+        <div className="border-t border-gray-200 pt-4">
+          <div className="flex items-center gap-3 mb-3">
+            <input type="checkbox" id="recurring" className="rounded text-blue-600" />
+            <label htmlFor="recurring" className="text-sm font-medium text-gray-700">Create recurring sessions</label>
+          </div>
+          
+          {/* Show only when recurring is checked */}
+          <div className="space-y-3" style={{display: 'none'}}>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Frequency</label>
+                <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                  <option value="weekly">Weekly</option>
+                  <option value="bi-weekly">Bi-weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Number of Sessions</label>
+                <input 
+                  type="number" 
+                  min="2" 
+                  max="52"
+                  placeholder="4" 
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+              <input 
+                type="date" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Options */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Additional Options</h4>
+          
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="sendReminder" className="rounded text-blue-600" />
+              <label htmlFor="sendReminder" className="text-sm text-gray-700">Send reminder to client (24 hours before)</label>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="blockCalendar" className="rounded text-blue-600" />
+              <label htmlFor="blockCalendar" className="text-sm text-gray-700">Block time in external calendar</label>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="requireConfirmation" className="rounded text-blue-600" />
+              <label htmlFor="requireConfirmation" className="text-sm text-gray-700">Require client confirmation</label>
+            </div>
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div className="border-t border-gray-200 pt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Session Notes</label>
+            <textarea 
+              placeholder="Special instructions, client requests, scheduling notes..." 
+              className="w-full p-3 border border-gray-300 rounded-lg h-20 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        {/* Session Summary */}
+        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <h4 className="text-sm font-medium text-blue-800 mb-2">Session Summary</h4>
+          <div className="text-sm text-blue-700 space-y-1">
+            <div className="flex justify-between">
+              <span>Client:</span>
+              <span className="font-medium">Not selected</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Date & Time:</span>
+              <span className="font-medium">Not set</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Duration:</span>
+              <span className="font-medium">45 minutes</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Location:</span>
+              <span className="font-medium">Not set</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Package:</span>
+              <span className="font-medium">None</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Fixed Footer */}
+      <div className="p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => setShowSessionForm(false)}
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => setShowSessionForm(false)}
+            className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium"
+          >
+            Schedule Session
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
 
         {/* PACKAGE FORM */}
@@ -1158,7 +1857,7 @@ const getRevenueChange = (current, previous) => {
         {/* Additional Options */}
         <div className="border-t border-gray-200 pt-4">
           <h4 className="text-sm font-medium text-gray-700 mb-3">Additional Options</h4>
-          
+          </div>
           <div className="space-y-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Bonus/Incentives</label>
