@@ -1025,25 +1025,180 @@ const getRevenueChange = (current, previous) => {
       )}
 
       {showLeadForm && (
-        <SimpleForm
-          title="Add Lead"
-          onSubmit={() => setShowLeadForm(false)}
-          onCancel={() => setShowLeadForm(false)}
-        >
-          <div className="space-y-4">
-            <input type="text" placeholder="Lead Name" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <select className="w-full p-2 border border-gray-300 rounded-lg">
-              <option>Select Platform</option>
-              <option>Instagram</option>
-              <option>Facebook</option>
-              <option>TikTok</option>
-              <option>LinkedIn</option>
-            </select>
-            <input type="text" placeholder="Handle/Username" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <input type="date" placeholder="Next Action Date" className="w-full p-2 border border-gray-300 rounded-lg" />
+  <SimpleForm
+    title="Add Lead"
+    onSubmit={() => setShowLeadForm(false)}
+    onCancel={() => setShowLeadForm(false)}
+  >
+    <div className="space-y-4">
+      {/* Basic Info */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Lead Name *</label>
+        <input 
+          type="text" 
+          placeholder="Full name" 
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+          required
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Platform *</label>
+          <select className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">Select Platform</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="TikTok">TikTok</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="YouTube">YouTube</option>
+            <option value="Website">Website</option>
+            <option value="Referral">Referral</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+          <select className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="follow-up">Follow-up</option>
+            <option value="won">Won</option>
+            <option value="lost">Lost</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Handle/Username</label>
+        <input 
+          type="text" 
+          placeholder="@username or profile URL" 
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+        />
+      </div>
+
+      {/* Contact Information */}
+      <div className="border-t border-gray-200 pt-4">
+        <h4 className="text-sm font-medium text-gray-700 mb-3">Contact Information (Optional)</h4>
+        
+        <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input 
+              type="email" 
+              placeholder="email@example.com" 
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+            />
           </div>
-        </SimpleForm>
-      )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <input 
+              type="tel" 
+              placeholder="(555) 123-4567" 
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Action Planning */}
+      <div className="border-t border-gray-200 pt-4">
+        <h4 className="text-sm font-medium text-gray-700 mb-3">Action Planning</h4>
+        
+        <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Next Action Date</label>
+            <input 
+              type="date" 
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Interest/Goals</label>
+            <select className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">Select primary interest</option>
+              <option value="weight-loss">Weight Loss</option>
+              <option value="strength-training">Strength Training</option>
+              <option value="cardio-fitness">Cardio/Fitness</option>
+              <option value="nutrition">Nutrition Coaching</option>
+              <option value="sports-specific">Sports-Specific Training</option>
+              <option value="rehabilitation">Rehabilitation</option>
+              <option value="general-fitness">General Fitness</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+            <input 
+              type="text" 
+              placeholder="beginner, motivated, budget-conscious (comma separated)" 
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+            />
+            <p className="text-xs text-gray-500 mt-1">Separate multiple tags with commas</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+            <textarea 
+              placeholder="Initial conversation notes, specific requirements, availability, etc." 
+              className="w-full p-2 border border-gray-300 rounded-lg h-20 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Lead Source Details */}
+      <div className="border-t border-gray-200 pt-4">
+        <h4 className="text-sm font-medium text-gray-700 mb-3">Lead Source Details (Optional)</h4>
+        
+        <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">How did they find you?</label>
+            <select className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">Select source</option>
+              <option value="social-media-post">Social Media Post</option>
+              <option value="friend-referral">Friend Referral</option>
+              <option value="client-referral">Client Referral</option>
+              <option value="google-search">Google Search</option>
+              <option value="local-ad">Local Advertisement</option>
+              <option value="gym-posting">Gym Posting/Flyer</option>
+              <option value="networking-event">Networking Event</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Referral Source</label>
+            <input 
+              type="text" 
+              placeholder="Who referred them? (if applicable)" 
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Budget Range</label>
+            <select className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">Not discussed</option>
+              <option value="under-50">Under $50/session</option>
+              <option value="50-75">$50-75/session</option>
+              <option value="75-100">$75-100/session</option>
+              <option value="100-150">$100-150/session</option>
+              <option value="150-plus">$150+/session</option>
+              <option value="package-deal">Interested in packages</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </SimpleForm>
+)}
+
     </div>
   );
 };
