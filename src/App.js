@@ -968,40 +968,512 @@ const getRevenueChange = (current, previous) => {
         </SimpleForm>
       )}
 
-      {showPackageForm && (
-        <SimpleForm
-          title="Add Package"
-          onSubmit={() => setShowPackageForm(false)}
-          onCancel={() => setShowPackageForm(false)}
-        >
-          <div className="space-y-4">
-            <input type="text" placeholder="Package Name" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <input type="number" placeholder="Price" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <input type="number" placeholder="Number of Sessions" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <input type="number" placeholder="Session Duration (min)" className="w-full p-2 border border-gray-300 rounded-lg" />
-          </div>
-        </SimpleForm>
-      )}
 
-      {showPaymentForm && (
-        <SimpleForm
-          title="Log Payment"
-          onSubmit={() => setShowPaymentForm(false)}
-          onCancel={() => setShowPaymentForm(false)}
-        >
+        {/* PACKAGE FORM */}
+      {showPackageForm && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] flex flex-col">
+      {/* Fixed Header */}
+      <div className="p-6 border-b border-gray-200">
+        <h2 className="text-xl font-semibold">Create Training Package</h2>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-5">
+        
+        {/* Package Templates */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h4 className="text-sm font-medium text-blue-800 mb-3">Quick Templates</h4>
+          <div className="grid grid-cols-2 gap-2">
+            <button className="text-left p-2 bg-white rounded border hover:bg-blue-50 text-sm">
+              <div className="font-medium">Starter Pack</div>
+              <div className="text-xs text-gray-600">5 sessions, 45min</div>
+            </button>
+            <button className="text-left p-2 bg-white rounded border hover:bg-blue-50 text-sm">
+              <div className="font-medium">Standard Pack</div>
+              <div className="text-xs text-gray-600">10 sessions, 60min</div>
+            </button>
+            <button className="text-left p-2 bg-white rounded border hover:bg-blue-50 text-sm">
+              <div className="font-medium">Premium Pack</div>
+              <div className="text-xs text-gray-600">20 sessions, 60min</div>
+            </button>
+            <button className="text-left p-2 bg-white rounded border hover:bg-blue-50 text-sm">
+              <div className="font-medium">Assessment</div>
+              <div className="text-xs text-gray-600">1 session, 90min</div>
+            </button>
+          </div>
+        </div>
+
+        {/* Basic Package Info */}
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Package Name *</label>
+            <input 
+              type="text" 
+              placeholder="e.g., 10-Session Personal Training Package" 
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <textarea 
+              placeholder="Package description for clients (what's included, benefits, etc.)" 
+              className="w-full p-3 border border-gray-300 rounded-lg h-20 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Package Type</label>
+            <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="personal-training">Personal Training</option>
+              <option value="group-training">Group Training</option>
+              <option value="consultation">Consultation Package</option>
+              <option value="nutrition-coaching">Nutrition Coaching</option>
+              <option value="online-coaching">Online Coaching</option>
+              <option value="assessment">Fitness Assessment</option>
+              <option value="specialty">Specialty Program</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Pricing & Sessions */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Pricing & Sessions</h4>
+          
           <div className="space-y-4">
-            <select className="w-full p-2 border border-gray-300 rounded-lg">
-              <option>Select Client</option>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Total Price *</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-3 text-gray-500">$</span>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    placeholder="0.00" 
+                    className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Price Per Session</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-3 text-gray-500">$</span>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    placeholder="Auto-calculated" 
+                    className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-lg bg-gray-50" 
+                    readOnly
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Number of Sessions *</label>
+                <input 
+                  type="number" 
+                  min="1"
+                  placeholder="10" 
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Session Duration (min)</label>
+                <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                  <option value="30">30 minutes</option>
+                  <option value="45">45 minutes</option>
+                  <option value="60" selected>60 minutes</option>
+                  <option value="75">75 minutes</option>
+                  <option value="90">90 minutes</option>
+                  <option value="120">120 minutes</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Validity & Terms */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Validity & Terms</h4>
+          
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Expires After</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="number" 
+                    min="1"
+                    placeholder="90" 
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  />
+                  <select className="w-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="days">Days</option>
+                    <option value="weeks">Weeks</option>
+                    <option value="months">Months</option>
+                    <option value="years">Years</option>
+                  </select>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Leave blank for no expiry</p>
+              </div>
+              
+              
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Cancellation Policy</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="24-hour">24 hour cancellation required</option>
+                <option value="48-hour">48 hour cancellation required</option>
+                <option value="same-day">Same day cancellation allowed</option>
+                <option value="no-cancellation">No cancellations after purchase</option>
+                <option value="custom">Custom policy</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" className="rounded text-blue-600" />
+                <span className="text-sm text-gray-700">Allow unused sessions to be transferred to other packages</span>
+              </label>
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" className="rounded text-blue-600" />
+                <span className="text-sm text-gray-700">Allow partial refunds for unused sessions</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Options */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Additional Options</h4>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Bonus/Incentives</label>
+              <input 
+                type="text" 
+                placeholder="e.g., Free nutrition consultation, workout plan included" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Target Audience</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="all">All fitness levels</option>
+                <option value="beginners">Beginners</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+                <option value="seniors">Seniors (55+)</option>
+                <option value="athletes">Athletes</option>
+                <option value="weight-loss">Weight loss focused</option>
+                <option value="strength">Strength training focused</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Internal Notes</label>
+              <textarea 
+                placeholder="Internal notes about this package (cost breakdown, profit margins, etc.)" 
+                className="w-full p-3 border border-gray-300 rounded-lg h-16 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Package Summary */}
+        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <h4 className="text-sm font-medium text-gray-700 mb-2">Package Summary</h4>
+          <div className="text-sm text-gray-600 space-y-1">
+            <div className="flex justify-between">
+              <span>Total Value:</span>
+              <span className="font-medium">$0.00</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Per Session:</span>
+              <span className="font-medium">$0.00</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Total Sessions:</span>
+              <span className="font-medium">0</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Duration:</span>
+              <span className="font-medium">0 min</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Expires:</span>
+              <span className="font-medium">Never</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Fixed Footer */}
+      <div className="p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => setShowPackageForm(false)}
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => setShowPackageForm(false)}
+            className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium"
+          >
+            Create Package
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
+       {/* PAYMENT FORM */}
+      {showPaymentForm && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] flex flex-col">
+      {/* Fixed Header */}
+      <div className="p-6 border-b border-gray-200">
+        <h2 className="text-xl font-semibold">Log Payment</h2>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-5">
+        
+        {/* Client & Service */}
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Client *</label>
+            <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+              <option value="">Select Client</option>
               {clients.map(client => (
                 <option key={client.id} value={client.id}>{client.name}</option>
               ))}
             </select>
-            <input type="number" placeholder="Amount" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <input type="date" className="w-full p-2 border border-gray-300 rounded-lg" />
-            <input type="text" placeholder="Payment Method" className="w-full p-2 border border-gray-300 rounded-lg" />
           </div>
-        </SimpleForm>
-      )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Payment For</label>
+            <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+              <option value="">Select service/package</option>
+              <option value="session">Individual Session</option>
+              <option value="package">Training Package</option>
+              <option value="consultation">Initial Consultation</option>
+              <option value="nutrition">Nutrition Coaching</option>
+              <option value="assessment">Fitness Assessment</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          {/* Show package dropdown if package is selected */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Related Package</label>
+            <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+              <option value="">None</option>
+              <option value="1">10-Pack 60min - $800</option>
+              <option value="2">5-Pack 45min - $375</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Payment Details */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Payment Details</h4>
+          
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Amount *</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-3 text-gray-500">$</span>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    placeholder="0.00" 
+                    className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+                  <option value="CAD">CAD (C$)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Payment Date *</label>
+                <input 
+                  type="date" 
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Payment Status</label>
+                <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                  <option value="completed">Completed</option>
+                  <option value="pending">Pending</option>
+                  <option value="partial">Partial Payment</option>
+                  <option value="refunded">Refunded</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method *</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                <option value="">Select method</option>
+                <option value="cash">Cash</option>
+                <option value="credit-card">Credit Card</option>
+                <option value="debit-card">Debit Card</option>
+                <option value="bank-transfer">Bank Transfer</option>
+                <option value="paypal">PayPal</option>
+                <option value="venmo">Venmo</option>
+                <option value="zelle">Zelle</option>
+                <option value="check">Check</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Receipt/Reference Number</label>
+              <input 
+                type="text" 
+                placeholder="Transaction ID, receipt number, etc." 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Options */}
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Additional Options</h4>
+          
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="recurring" className="rounded text-green-600" />
+              <label htmlFor="recurring" className="text-sm text-gray-700">Set up recurring payment</label>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="sendReceipt" className="rounded text-green-600" />
+              <label htmlFor="sendReceipt" className="text-sm text-gray-700">Send receipt to client</label>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="updatePackage" className="rounded text-green-600" />
+              <label htmlFor="updatePackage" className="text-sm text-gray-700">Activate associated package</label>
+            </div>
+          </div>
+        </div>
+
+        {/* Recurring Payment Details (show only if recurring is checked) */}
+        <div className="border-t border-gray-200 pt-4" style={{display: 'none'}}>
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Recurring Payment Setup</h4>
+          
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Frequency</label>
+              <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                <option value="weekly">Weekly</option>
+                <option value="bi-weekly">Bi-weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="quarterly">Quarterly</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Next Payment</label>
+              <input 
+                type="date" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div className="border-t border-gray-200 pt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+            <textarea 
+              placeholder="Payment notes, special terms, installment details, etc." 
+              className="w-full p-3 border border-gray-300 rounded-lg h-20 resize-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        {/* Quick Totals Display */}
+        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <div className="text-sm text-gray-600 space-y-1">
+            <div className="flex justify-between">
+              <span>Amount:</span>
+              <span className="font-medium">$0.00</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Payment Method:</span>
+              <span className="font-medium">-</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Client:</span>
+              <span className="font-medium">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+      {/* Fixed Footer */}
+      <div className="p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => setShowPaymentForm(false)}
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => setShowPaymentForm(false)}
+            className="flex-1 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-medium"
+          >
+            Log Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
             {/* Post form */}
       {showPostForm && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -1432,8 +1904,7 @@ const getRevenueChange = (current, previous) => {
       </div>
     </div>
   </div>
-)}
-
+      )}
     </div>
   );
 };
