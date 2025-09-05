@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Users, Package, DollarSign, TrendingUp, Plus, CheckCircle, Clock, User, Phone, Mail, MapPin } from 'lucide-react';
+import { Calendar, Users, Package, DollarSign, TrendingUp, Plus, CheckCircle, Clock, User, Phone, Mail, MapPin, 
+  ArrowUp,
+  ArrowDown,
+  Wallet,
+  CreditCard, } from 'lucide-react';
 
 const GymBagApp = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -199,6 +203,57 @@ const GymBagApp = () => {
   const [editingPackage, setEditingPackage] = useState(null);
 
   // Helper functions
+
+  // Helper: safe date from YYYY-MM-DD
+const toDate = (s) => new Date(s);
+
+// Use the same testing anchor you already set in your file:
+const anchor = new Date('2025-09-05'); // or new Date() in production
+const curYear = anchor.getFullYear();
+const curMonth = anchor.getMonth(); // 0-11
+
+const getAllTimeRevenue = () =>
+  payments.reduce((t, p) => t + (Number(p.amount) || 0), 0);
+
+const getYearToDateRevenue = () =>
+  payments.reduce((t, p) => {
+    const d = toDate(p.date);
+    return d.getFullYear() === curYear ? t + (Number(p.amount) || 0) : t;
+  }, 0);
+
+const getSixMonthsRevenue = () => {
+  const start = new Date(curYear, curMonth - 5, 1); // start of month, 5 months ago (includes current month)
+  return payments.reduce((t, p) => {
+    const d = toDate(p.date);
+    return d >= start && d <= anchor ? t + (Number(p.amount) || 0) : t;
+  }, 0);
+};
+
+const getOneMonthRevenue = () =>
+  payments.reduce((t, p) => {
+    const d = toDate(p.date);
+    return d.getFullYear() === curYear && d.getMonth() === curMonth
+      ? t + (Number(p.amount) || 0)
+      : t;
+  }, 0);
+
+const getPreviousMonthRevenue = () => {
+  const prevMonth = (curMonth + 11) % 12;
+  const prevYear = prevMonth === 11 ? curYear - 1 : curYear;
+  return payments.reduce((t, p) => {
+    const d = toDate(p.date);
+    return d.getFullYear() === prevYear && d.getMonth() === prevMonth
+      ? t + (Number(p.amount) || 0)
+      : t;
+  }, 0);
+};
+
+const getRevenueChange = (current, previous) => {
+  if (!previous && current > 0) return 100;
+  if (!previous && !current) return 0;
+  return Math.round(((current - previous) / previous) * 100);
+};
+
   const getThisWeekSessions = () => {
     const today = new Date('2025-09-05'); // Current date from context
     const startOfWeek = new Date(today);
@@ -256,82 +311,120 @@ const GymBagApp = () => {
   };
 
   // Dashboard Component
-  const Dashboard = () => (
-    <div className="p-4 space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-      
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-blue-600">Sessions This Week</p>
-              <p className="text-2xl font-bold text-blue-900">{getThisWeekSessions().length}</p>
-            </div>
-            <Calendar className="h-8 w-8 text-blue-500" />
-          </div>
-        </div>
-        
-        <div className="bg-green-50 p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-green-600">Revenue This Month</p>
-              <p className="text-2xl font-bold text-green-900">${getThisMonthRevenue()}</p>
-            </div>
-            <DollarSign className="h-8 w-8 text-green-500" />
-          </div>
-        </div>
-        
-        <div className="bg-orange-50 p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-orange-600">Need Follow-up</p>
-              <p className="text-2xl font-bold text-orange-900">{getClientsNeedingFollowUp().length}</p>
-            </div>
-            <Users className="h-8 w-8 text-orange-500" />
-          </div>
-        </div>
-        
-        <div className="bg-purple-50 p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-purple-600">Posts Planned</p>
-              <p className="text-2xl font-bold text-purple-900">{posts.filter(p => p.status === 'planned').length}</p>
-            </div>
-            <TrendingUp className="h-8 w-8 text-purple-500" />
-          </div>
-        </div>
-      </div>
+  const Dashboard = () => {
+    // Declare revenue variables using the existing helpers
+    const allTimeRevenue = getAllTimeRevenue();
+    const yearToDateRevenue = getYearToDateRevenue();
+    const sixMonthsRevenue = getSixMonthsRevenue();
+    const oneMonthRevenue = getOneMonthRevenue();
+    const previousMonthRevenue = getPreviousMonthRevenue();
+    const monthlyChange = getRevenueChange(oneMonthRevenue, previousMonthRevenue);
+    const monthsElapsedYTD = curMonth + 1; // Jan..current inclusive
+    const monthlyAvgYTD = monthsElapsedYTD ? Math.round(yearToDateRevenue / monthsElapsedYTD) : 0;
 
-      {/* Recent Activity */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <h2 className="text-lg font-semibold mb-4">Today's Sessions</h2>
-        <div className="space-y-3">
-          {sessions
-            .filter(session => session.date === '2025-09-05')
-            .map(session => (
-              <div key={session.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium">{session.clientName}</p>
-                  <p className="text-sm text-gray-600">{session.time} - {session.location}</p>
-                </div>
-                {session.status === 'planned' && (
-                  <button 
-                    onClick={() => completeSession(session.id)}
-                    className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
-                  >
-                    Complete
-                  </button>
-                )}
+    return (
+      <div className="p-4 space-y-6">
+        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        
+        {/* KPI Cards */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-blue-600">Sessions This Week</p>
+                <p className="text-2xl font-bold text-blue-900">{getThisWeekSessions().length}</p>
               </div>
-            ))}
-          {sessions.filter(session => session.date === '2025-09-05').length === 0 && (
-            <p className="text-gray-500">No sessions scheduled for today</p>
-          )}
+              <Calendar className="h-8 w-8 text-blue-500" />
+            </div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-4 text-white shadow-md">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <p className="text-sm text-green-100 font-medium">Revenue Overview</p>
+                <p className="text-xl font-bold">${oneMonthRevenue.toLocaleString()}</p>
+              </div>
+              <div
+                className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                  monthlyChange >= 0 ? 'bg-green-400/30' : 'bg-red-400/30'
+                }`}
+              >
+                {monthlyChange >= 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
+                {Math.abs(monthlyChange)}%
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 mt-2 text-xs">
+              <div className="bg-white/10 rounded p-2">
+                <span className="block text-green-100">All Time</span>
+                <span className="text-sm font-bold">${allTimeRevenue.toLocaleString()}</span>
+              </div>
+              <div className="bg-white/10 rounded p-2">
+                <span className="block text-green-100">YTD</span>
+                <span className="text-sm font-bold">${yearToDateRevenue.toLocaleString()}</span>
+              </div>
+              <div className="bg-white/10 rounded p-2">
+                <span className="block text-green-100">6 Mo.</span>
+                <span className="text-sm font-bold">${sixMonthsRevenue.toLocaleString()}</span>
+              </div>
+              <div className="bg-white/10 rounded p-2">
+                <span className="block text-green-100">1 Mo.</span>
+                <span className="text-sm font-bold">${oneMonthRevenue.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-orange-50 p-4 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-orange-600">Need Follow-up</p>
+                <p className="text-2xl font-bold text-orange-900">{getClientsNeedingFollowUp().length}</p>
+              </div>
+              <Users className="h-8 w-8 text-orange-500" />
+            </div>
+          </div>
+          
+          <div className="bg-purple-50 p-4 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-purple-600">Posts Planned</p>
+                <p className="text-2xl font-bold text-purple-900">{posts.filter(p => p.status === 'planned').length}</p>
+              </div>
+              <TrendingUp className="h-8 w-8 text-purple-500" />
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <h2 className="text-lg font-semibold mb-4">Today's Sessions</h2>
+          <div className="space-y-3">
+            {sessions
+              .filter(session => session.date === '2025-09-05')
+              .map(session => (
+                <div key={session.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium">{session.clientName}</p>
+                    <p className="text-sm text-gray-600">{session.time} - {session.location}</p>
+                  </div>
+                  {session.status === 'planned' && (
+                    <button 
+                      onClick={() => completeSession(session.id)}
+                      className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                    >
+                      Complete
+                    </button>
+                  )}
+                </div>
+              ))}
+            {sessions.filter(session => session.date === '2025-09-05').length === 0 && (
+              <p className="text-gray-500">No sessions scheduled for today</p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // Clients Component
   const Clients = () => (
@@ -705,7 +798,7 @@ const GymBagApp = () => {
           <h2 className="text-xl font-semibold mb-4">
             {editingClient ? 'Edit Client' : 'Add Client'}
           </h2>
-          <div onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Name</label>
@@ -768,13 +861,13 @@ const GymBagApp = () => {
                 Cancel
               </button>
               <button
-                onClick={handleSubmit}
+                type="submit"
                 className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
               >
                 {editingClient ? 'Update' : 'Add'} Client
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     );
